@@ -1,8 +1,8 @@
 Getting start with this program
 
-1. npm i
-2. Go to client folder
-3. Run npm start
+1. cd to "client" folder
+2. Run "npm i"
+3. Run "npm start"
 
 To test if the database succefully connect:
 
