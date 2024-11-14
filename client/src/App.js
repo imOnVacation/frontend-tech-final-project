@@ -5,7 +5,6 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Search from './pages/Search';
 import TicketCreation from './pages/TicketCreation';
-// import './style.css';
 
 export default function App() {
   return (
@@ -35,16 +34,10 @@ export default function App() {
 
       <Container className='my-4'>
         <Routes>
-          <Route exact path='/' element={<Home title='Home Page' />} />
-          <Route
-            path='/dashboard'
-            element={<Dashboard title='Dashboard Page' />}
-          />
-          <Route path='/seasrch' element={<Search title='Search Page' />} />
-          <Route
-            path='/ticketcreation'
-            element={<TicketCreation title='Ticket Creation Page' />}
-          />
+          <Route exact path='/' element={<Home />} />
+          <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='/search' element={<Search />} />
+          <Route path='/ticketcreation' element={<TicketCreation />} />
         </Routes>
       </Container>
     </Router>
