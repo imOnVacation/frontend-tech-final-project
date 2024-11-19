@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const TicketStatusSummary = () => {
+const TicketsByTicketStatus = () => {
   const [tickets, setTickets] = useState([]);
 
   useEffect(() => {
@@ -18,8 +18,7 @@ const TicketStatusSummary = () => {
   }, []);
 
   return (
-    <div>
-      <h1>This is the TicketStatusSummary Componenet</h1>
+    <section className='contianer mt-5'>
       <ul>
         {tickets.map((ticket) => (
           <li key={ticket.id}>
@@ -27,8 +26,8 @@ const TicketStatusSummary = () => {
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   );
 };
 
-export default TicketStatusSummary;
+export default TicketsByTicketStatus;

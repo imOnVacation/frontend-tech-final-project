@@ -2,8 +2,57 @@ import React, { useEffect, useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { useNavigate } from 'react-router-dom';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
+
+const TicketStatusOverview = ({ statusCounts, selectedMonth }) => {
+  const navigate = useNavigate();
+
+  return (
+    <div className='d-flex flex-wrap justify-content-center my-4'>
+      {['Open', 'WIP', 'Completed', 'Assigned', 'Cancelled'].map((status) => {
+        const ticketCount = statusCounts?.[status] || 0;
+        const isClickable = ticketCount > 0;
+
+        return (
+          <div
+            key={status}
+            className={`card m-2 text-center ${
+              isClickable ? 'clickable-card' : 'non-clickable-card'
+            }`}
+            style={{
+              width: '150px',
+              cursor: isClickable ? 'pointer' : 'default',
+              border: '1px solid #ddd',
+              borderRadius: '8px',
+              boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+            }}
+            onClick={() =>
+              isClickable &&
+              navigate(`/tickets?month=${selectedMonth}&status=${status}`)
+            }
+          >
+            <div className='card-body'>
+              <h5 className='card-title' style={{ fontWeight: 'bold' }}>
+                {status}
+              </h5>
+              <p
+                className='card-text'
+                style={{
+                  fontSize: '1.2rem',
+                  color: isClickable ? 'DodgerBlue' : 'black',
+                }}
+              >
+                {ticketCount} Tickets
+              </p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 const TicketStatusGraph = () => {
   const [statusCounts, setStatusCounts] = useState(null);
@@ -114,6 +163,13 @@ const TicketStatusGraph = () => {
           <div>Loading...</div>
         )}
       </div>
+
+      {statusCounts && totalTickets > 0 && (
+        <TicketStatusOverview
+          statusCounts={statusCounts}
+          selectedMonth={selectedMonth}
+        />
+      )}
     </section>
   );
 };
