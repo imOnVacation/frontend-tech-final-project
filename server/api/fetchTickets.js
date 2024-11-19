@@ -6,7 +6,6 @@ const fetchTickets = async () => {
     console.error('Error fetching tickets:', error.message);
     return null;
   }
-  console.log(data);
   return data;
 };
 

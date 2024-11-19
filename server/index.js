@@ -3,6 +3,32 @@ const fetchTickets = require('./api/fetchTickets.js');
 
 const app = express();
 
+app.get('/api/tickets/status-counts', async (req, res) => {
+  try {
+    const tickets = await fetchTickets();
+
+    if (!tickets) {
+      return res.status(500).json({ error: 'Failed to fetch tickets' });
+    }
+
+    const statusCounts = {
+      Open: 0,
+      WIP: 0,
+      Completed: 0,
+    };
+
+    tickets.forEach((ticket) => {
+      if (statusCounts[ticket.status] !== undefined) {
+        statusCounts[ticket.status]++;
+      }
+    });
+
+    res.status(200).json(statusCounts);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 app.get('/api/tickets', async (req, res) => {
   try {
     const tickets = await fetchTickets();
