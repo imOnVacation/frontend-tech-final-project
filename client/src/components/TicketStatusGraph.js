@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
+import 'chart.js/auto';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -55,13 +56,6 @@ const TicketStatusGraph = () => {
           percentages?.Assigned || 0,
           percentages?.Cancelled || 0,
         ],
-        backgroundColor: [
-          '#ff6384',
-          '#36a2eb',
-          '#cc65fe',
-          '#36a31b',
-          '#cc15fe',
-        ],
       },
     ],
   };
@@ -77,15 +71,25 @@ const TicketStatusGraph = () => {
         },
       },
     },
+    maintainAspectRatio: false,
   };
 
   return (
-    <div>
-      <h1>Ticket Status Distribution (%)</h1>
-      <div>
-        <label htmlFor='month-select'>Select Month: </label>
+    <section className='container mt-5'>
+      <h1
+        className='text-center mb-4'
+        style={{ fontSize: '2rem', fontWeight: 'bold' }}
+      >
+        Ticket Status Distribution (%)
+      </h1>
+
+      <div className='mb-3 d-flex justify-content-center align-items-center'>
+        <label htmlFor='month-select' className='form-label me-2 mb-0'>
+          Select Month:
+        </label>
         <select
           id='month-select'
+          className='form-select w-auto'
           value={selectedMonth}
           onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
         >
@@ -95,9 +99,14 @@ const TicketStatusGraph = () => {
             </option>
           ))}
         </select>
+      </div>
+
+      <div className='d-flex justify-content-center align-items-center'>
         {statusCounts ? (
           totalTickets > 0 ? (
-            <Doughnut data={data} options={options} />
+            <div style={{ width: '400px', height: '400px' }}>
+              <Doughnut data={data} options={options} />
+            </div>
           ) : (
             <div>No tickets available for the selected month.</div>
           )
@@ -105,7 +114,7 @@ const TicketStatusGraph = () => {
           <div>Loading...</div>
         )}
       </div>
-    </div>
+    </section>
   );
 };
 
