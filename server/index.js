@@ -3,21 +3,35 @@ const fetchTickets = require('./api/fetchTickets.js');
 
 const app = express();
 
-app.get('/api/tickets/status-counts', async (req, res) => {
+app.get('/api/tickets/by-month', async (req, res) => {
   try {
-    const tickets = await fetchTickets();
+    const { month } = req.query;
 
+    if (!month || isNaN(month) || month < 1 || month > 12) {
+      return res.status(400).json({
+        error: 'Invalid month. Please provide a value between 1 and 12.',
+      });
+    }
+
+    const tickets = await fetchTickets();
     if (!tickets) {
       return res.status(500).json({ error: 'Failed to fetch tickets' });
     }
+
+    const filteredTickets = tickets.filter((ticket) => {
+      const ticketDate = new Date(ticket.request_date);
+      return ticketDate.getMonth() + 1 === parseInt(month);
+    });
 
     const statusCounts = {
       Open: 0,
       WIP: 0,
       Completed: 0,
+      Assigned: 0,
+      Cancelled: 0,
     };
 
-    tickets.forEach((ticket) => {
+    filteredTickets.forEach((ticket) => {
       if (statusCounts[ticket.status] !== undefined) {
         statusCounts[ticket.status]++;
       }
