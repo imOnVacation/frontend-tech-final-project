@@ -30,7 +30,11 @@ const TicketStatusOverview = ({ statusCounts, selectedMonth }) => {
             }}
             onClick={() =>
               isClickable &&
-              navigate(`/tickets?month=${selectedMonth}&status=${status}`)
+              navigate(
+                `/tickets/list?month=${selectedMonth}&status=${encodeURIComponent(
+                  status
+                )}`
+              )
             }
           >
             <div className='card-body'>
