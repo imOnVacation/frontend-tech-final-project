@@ -51,7 +51,7 @@ const TicketTrendByShop = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'top',
+        display: false,
       },
     },
     scales: {
