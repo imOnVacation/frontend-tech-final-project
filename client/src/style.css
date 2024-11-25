@@ -3,3 +3,13 @@
   color: #000;
   border-radius: 5px;
 }
+
+.home-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-message {
+  background: hsla(0, 0%, 100%, 0.218);
+  border-radius: 10px;
+}
