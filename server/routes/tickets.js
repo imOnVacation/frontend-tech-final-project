@@ -41,11 +41,17 @@ router.get('/by-shop', async (req, res) => {
 
 router.get('/list', async (req, res) => {
   try {
-    const { month, status } = req.query;
+    const { month, status, page = 1, size = 20 } = req.query;
 
     if (!month || isNaN(month) || month < 1 || month > 12) {
       return res.status(400).json({
         error: 'Invalid month. Please provide a value between 1 and 12.',
+      });
+    }
+
+    if (!status) {
+      return res.status(400).json({
+        error: 'Status is required.',
       });
     }
 
@@ -62,7 +68,14 @@ router.get('/list', async (req, res) => {
       );
     });
 
-    res.status(200).json(filteredTickets);
+    const startIndex = (page - 1) * size;
+    const endIndex = startIndex + parseInt(size);
+    const paginatedTickets = filteredTickets.slice(startIndex, endIndex);
+
+    res.status(200).json({
+      tickets: paginatedTickets,
+      totalPages: Math.ceil(filteredTickets.length / size),
+    });
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
   }
