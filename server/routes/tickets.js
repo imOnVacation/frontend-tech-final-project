@@ -85,34 +85,4 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/submit-form", async (req, res) => {
-  const { id, description, status, location, request_date, shop, priority } =
-    req.body;
-
-  try {
-    const { data, error } = await supabase.from("ticket_info").insert([
-      {
-        id: id,
-        description: description,
-        status: status,
-        location: location,
-        request_date: request_date,
-        shop: shop,
-        priority: priority,
-      },
-    ]);
-
-    if (error) {
-      throw error;
-    }
-
-    res
-      .status(200)
-      .json({ message: "Ticket created successfully", data: data });
-  } catch (error) {
-    console.error("Error inserting ticket:", error.message);
-    res.status(500).json({ error: "Failed to create ticket" });
-  }
-});
-
 module.exports = router;

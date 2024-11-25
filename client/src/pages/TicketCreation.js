@@ -29,7 +29,7 @@ const WorkOrderForm = () => {
     };
 
     try {
-      const response = await fetch("api/tickets/submit-form", {
+      const response = await fetch("api/searchkey/submit-form", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
