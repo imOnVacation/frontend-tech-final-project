@@ -49,6 +49,7 @@ const TicketTrendByShop = () => {
 
   const lineChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: false,
@@ -71,7 +72,7 @@ const TicketTrendByShop = () => {
   };
 
   return (
-    <section className='container mt-5'>
+    <section className='container my-5'>
       <h1
         className='text-center mb-4'
         style={{ fontSize: '2rem', fontWeight: 'bold' }}
@@ -101,7 +102,13 @@ const TicketTrendByShop = () => {
         {isLoading ? (
           <div>Loading...</div>
         ) : lineChartData ? (
-          <div style={{ width: '600px', height: '400px' }}>
+          <div
+            style={{
+              width: '100%',
+              maxWidth: '800px',
+              height: '400px',
+            }}
+          >
             <Line
               data={{
                 labels: lineChartData.labels,
