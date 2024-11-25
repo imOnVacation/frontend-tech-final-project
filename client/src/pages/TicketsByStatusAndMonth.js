@@ -32,7 +32,27 @@ const TicketsByStatusAndMonth = () => {
       {tickets === null ? (
         <div>Loading...</div>
       ) : (
-        <pre>{JSON.stringify(tickets, null, 2)}</pre>
+        <div className='row'>
+          {tickets.map((ticket, index) => (
+            <div key={index} className='col-md-4 mb-4'>
+              <div className='card h-100'>
+                <div className='card-body'>
+                  <h5 className='card-title'>Ticket ID: {ticket.id}</h5>
+                  <p className='card-text'>
+                    <strong>Description:</strong> {ticket.description}
+                  </p>
+                  <p className='card-text'>
+                    <strong>Request Date:</strong>
+                    {new Date(ticket.request_date).toLocaleDateString()}
+                  </p>
+                  <p className='card-text'>
+                    <strong>Priority:</strong> {ticket.priority}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
