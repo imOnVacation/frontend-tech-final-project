@@ -15,7 +15,6 @@ const WorkOrderForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Reset states
     setError(null);
     setSuccess(null);
 
@@ -30,13 +29,16 @@ const WorkOrderForm = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/submit-form", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/tickets/submit-form",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const data = await response.json();
 
@@ -103,14 +105,20 @@ const WorkOrderForm = () => {
           <label htmlFor="status" className="form-label fw-bold">
             Status <span className="text-danger">*</span>
           </label>
-          <input
-            type="text"
+          <select
             className="form-control"
             id="status"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
             required
-          />
+          >
+            <option value="">Select Status</option>
+            <option value="Completed">Completed</option>
+            <option value="Assigned">Assigned</option>
+            <option value="Open">Open</option>
+            <option value="Cancelled">Cancelled</option>
+            <option value="WIP">WIP</option>
+          </select>
         </div>
 
         <div className="mb-3">
@@ -132,7 +140,7 @@ const WorkOrderForm = () => {
             Request Date <span className="text-danger">*</span>
           </label>
           <input
-            type="text"
+            type="date"
             className="form-control"
             id="request_date"
             value={request_date}
@@ -159,14 +167,18 @@ const WorkOrderForm = () => {
           <label htmlFor="priority" className="form-label fw-bold">
             Priority <span className="text-danger">*</span>
           </label>
-          <input
-            type="text"
+          <select
             className="form-control"
             id="priority"
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
             required
-          />
+          >
+            <option value="">Select Priority</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="Routine">Routine</option>
+          </select>
         </div>
 
         <div className="row">

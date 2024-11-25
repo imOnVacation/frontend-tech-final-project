@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const ticketRoutes = require("./routes/tickets");
 const searchroutes = require("./routes/searchkey");
 const app = express();
