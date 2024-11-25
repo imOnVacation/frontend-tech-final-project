@@ -13,7 +13,8 @@ const renderCard = (
   ticketCount,
   isClickable,
   selectedMonth,
-  navigate
+  navigate,
+  color
 ) => (
   <div
     key={status}
@@ -37,14 +38,20 @@ const renderCard = (
     }
   >
     <div className='card-body'>
-      <h5 className='card-title' style={{ fontWeight: 'bold' }}>
+      <h5
+        className='card-title'
+        style={{
+          fontWeight: 'bold',
+          color: color,
+        }}
+      >
         {status}
       </h5>
       <p
         className='card-text'
         style={{
           fontSize: '1.2rem',
-          color: isClickable ? 'DodgerBlue' : 'black',
+          color: 'black',
         }}
       >
         {ticketCount} Tickets
@@ -53,18 +60,19 @@ const renderCard = (
   </div>
 );
 
-const TicketStatusOverview = ({ statusCounts, selectedMonth }) => {
+const TicketStatusOverview = ({ statusCounts, selectedMonth, colors }) => {
   const navigate = useNavigate();
 
   return (
     <div className='d-flex flex-wrap justify-content-center my-4'>
-      {TICKET_STATUSES.map((status) =>
+      {TICKET_STATUSES.map((status, index) =>
         renderCard(
           status,
           statusCounts?.[status] || 0,
           statusCounts?.[status] > 0,
           selectedMonth,
-          navigate
+          navigate,
+          colors[index]
         )
       )}
     </div>
@@ -109,7 +117,18 @@ const TicketStatusGraph = () => {
 
   const data = {
     labels: TICKET_STATUSES,
-    datasets: [{ data: percentages ? Object.values(percentages) : [] }],
+    datasets: [
+      {
+        data: percentages ? Object.values(percentages) : [],
+        backgroundColor: [
+          '#FF6384',
+          '#36A2EB',
+          '#FFCE56',
+          '#4BC0C0',
+          '#9966FF',
+        ],
+      },
+    ],
   };
 
   const chartOptions = (totalTickets) => ({
@@ -178,6 +197,7 @@ const TicketStatusGraph = () => {
         <TicketStatusOverview
           statusCounts={statusCounts}
           selectedMonth={selectedMonth}
+          colors={data.datasets[0].backgroundColor}
         />
       )}
     </section>
