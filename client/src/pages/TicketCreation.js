@@ -180,14 +180,14 @@ const TicketForm = () => {
 
         <div className="row">
           <div className="col">
-            <button type="submit" className="btn btn-primary w-100">
+            <button type="submit" className="btn btn-primary mt-2 w-100">
               Submit
             </button>
           </div>
           <div className="col">
             <button
               type="button"
-              className="btn btn-secondary w-100"
+              className="btn btn-secondary mt-2 w-100"
               onClick={resetForm}
             >
               Reset
