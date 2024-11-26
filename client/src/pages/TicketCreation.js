@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const WorkOrderForm = () => {
+const TicketForm = () => {
   const [id, setId] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
@@ -199,4 +199,4 @@ const WorkOrderForm = () => {
   );
 };
 
-export default WorkOrderForm;
+export default TicketForm;

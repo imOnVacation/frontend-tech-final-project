@@ -71,7 +71,6 @@ router.post("/submit-form", async (req, res) => {
   }
 });
 
-// Delete ticket by ID
 router.delete("/ticket/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -84,6 +83,37 @@ router.delete("/ticket/:id", async (req, res) => {
     res.status(200).json({ message: "Ticket deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.put("/ticket/:id", async (req, res) => {
+  const { id } = req.params;
+  const { description, status, location, request_date, shop, priority } =
+    req.body;
+
+  try {
+    const { data, error } = await supabase
+      .from("ticket_info")
+      .update({
+        description: description,
+        status: status,
+        location: location,
+        request_date: request_date,
+        shop: shop,
+        priority: priority,
+      })
+      .eq("id", id);
+
+    if (error) {
+      throw error;
+    }
+
+    res
+      .status(200)
+      .json({ message: "Ticket updated successfully", data: data });
+  } catch (error) {
+    console.error("Error updating ticket:", error.message);
+    res.status(500).json({ error: "Failed to update ticket" });
   }
 });
 

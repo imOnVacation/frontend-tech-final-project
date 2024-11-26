@@ -1,6 +1,5 @@
 const express = require("express");
 const fetchTickets = require("../api/fetchTickets.js");
-const supabase = require("../supabaseClient");
 const router = express.Router();
 
 router.get("/list", async (req, res) => {
