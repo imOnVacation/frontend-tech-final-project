@@ -8,7 +8,6 @@ const Search = () => {
   const [error, setError] = useState(null);
   const [searched, setSearched] = useState(false);
   const [deleteSuccess, setDeleteSuccess] = useState("");
-
   const navigate = useNavigate();
 
   const handleSearch = async () => {
@@ -72,7 +71,12 @@ const Search = () => {
           prevTickets.filter((ticket) => ticket.id !== ticketId)
         );
         setDeleteSuccess(`Ticket ${ticketId} deleted successfully`);
-      }, 1000);
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => {
+          setDeleteSuccess("");
+        }, 4000);
+      }, 2000);
     } catch (error) {
       setError(`Error deleting ticket: ${error.message}`);
     }
@@ -139,8 +143,8 @@ const Search = () => {
                 </div>
               ) : ticket.isDeleted ? (
                 <div className="card h-100 d-flex flex-column justify-content-center align-items-center">
-                  <p className="text-success">
-                    <strong>Deleted!!</strong>
+                  <p className="mt-2">
+                    <span style={{ fontSize: "18px" }}>Deleted.....!!</span>
                   </p>
                 </div>
               ) : (
