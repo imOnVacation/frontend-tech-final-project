@@ -51,7 +51,7 @@ const Search = () => {
       }
 
       setTickets(tickets.filter((ticket) => ticket.id !== ticketId));
-      setDeleteSuccess(`Ticket${ticketId} deleted successfully`);
+      setDeleteSuccess(`Ticket ${ticketId} deleted successfully`);
     } catch (error) {
       setError(`Error deleting ticket: ${error.message}`);
     }
@@ -59,6 +59,17 @@ const Search = () => {
 
   const handleEdit = (ticket) => {
     navigate(`/TicketEdit/${ticket.id}`, { state: { ticket } });
+  };
+
+  const highlightKeyword = (text, keyword) => {
+    const parts = text.split(new RegExp(`(${keyword})`, "gi"));
+    return parts.map((part, index) =>
+      part.toLowerCase() === keyword.toLowerCase() ? (
+        <mark key={index}>{part}</mark>
+      ) : (
+        part
+      )
+    );
   };
 
   return (
@@ -102,7 +113,8 @@ const Search = () => {
                 <div className="card-body d-flex flex-column">
                   <h5 className="card-title">Ticket ID: {ticket.id}</h5>
                   <p className="card-text">
-                    <strong>Description:</strong> {ticket.description}
+                    <strong>Description:</strong>{" "}
+                    {highlightKeyword(ticket.description, keyword)}
                   </p>
                   <p className="card-text">
                     <strong>Status:</strong> {ticket.status}
