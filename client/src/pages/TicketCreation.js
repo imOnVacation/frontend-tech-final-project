@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Modal } from "react-bootstrap";
 
 const TicketForm = () => {
   const [id, setId] = useState("");
@@ -10,6 +11,8 @@ const TicketForm = () => {
   const [priority, setPriority] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [submittedData, setSubmittedData] = useState(null);
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -45,6 +48,12 @@ const TicketForm = () => {
 
       setSuccess(data.message);
 
+      setSubmittedData(formData);
+
+      setTimeout(() => {
+        setShowModal(true);
+      }, 3000);
+
       resetForm();
     } catch (err) {
       setError(err.message || "An error occurred");
@@ -60,6 +69,11 @@ const TicketForm = () => {
     setRequestDate("");
     setShop("");
     setPriority("");
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setSuccess(null);
   };
 
   return (
@@ -195,6 +209,43 @@ const TicketForm = () => {
           </div>
         </div>
       </form>
+      {submittedData && (
+        <Modal show={showModal} onHide={handleModalClose} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Ticket Details</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <ul>
+              <li>
+                <strong>Ticket ID - </strong> {submittedData.id}
+              </li>
+              <li>
+                <strong>Description - </strong> {submittedData.description}
+              </li>
+              <li>
+                <strong>Status - </strong> {submittedData.status}
+              </li>
+              <li>
+                <strong>Location - </strong> {submittedData.location}
+              </li>
+              <li>
+                <strong>Request Date - </strong> {submittedData.request_date}
+              </li>
+              <li>
+                <strong>Shop - </strong> {submittedData.shop}
+              </li>
+              <li>
+                <strong>Priority - </strong> {submittedData.priority}
+              </li>
+            </ul>
+          </Modal.Body>
+          <Modal.Footer>
+            <button className="btn btn-secondary" onClick={handleModalClose}>
+              Close
+            </button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </div>
   );
 };
