@@ -111,8 +111,7 @@ const Search = () => {
                     <strong>Location:</strong> {ticket.location}
                   </p>
                   <p className="card-text">
-                    <strong>Request Date:</strong>{" "}
-                    {new Date(ticket.request_date).toLocaleDateString()}
+                    <strong>Request Date:</strong> {ticket.request_date}
                   </p>
                   <p className="card-text">
                     <strong>Shop:</strong> {ticket.shop}
