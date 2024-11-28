@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../style.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { TailSpin } from "react-loader-spinner";
 
 const Search = () => {
   const [keyword, setKeyword] = useState("");
@@ -48,6 +52,7 @@ const Search = () => {
     );
 
     try {
+      // Simulate a delay
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const response = await fetch(`/api/searchkey/ticket/${ticketId}`, {
@@ -98,99 +103,113 @@ const Search = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h1 className="text-center mb-4">Search Tickets by Keyword</h1>
+    <div
+      style={{
+        background: "linear-gradient(90deg, #2C3E50, #4169E1)",
+        minHeight: "100vh",
+        color: "white",
+        padding: "20px",
+        borderRadius: "10px",
+      }}
+    >
+      <div className="container mt-5">
+        <h1 className="text-center mb-4">Search Tickets by Keyword</h1>
 
-      <div className="mb-4 text-center">
-        <input
-          type="text"
-          className="form-control w-25 mx-auto"
-          placeholder="Enter keyword"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-        />
-        <button className="btn btn-primary mt-3" onClick={handleSearch}>
-          Search
-        </button>
-      </div>
+        <div className="mb-4 text-center">
+          <input
+            type="text"
+            className="form-control w-25 mx-auto"
+            placeholder="Enter keyword"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+          />
+          <button className="btn btn-primary mt-3" onClick={handleSearch}>
+            Search
+          </button>
+        </div>
 
-      {deleteSuccess && (
-        <div className="alert alert-success text-center">{deleteSuccess}</div>
-      )}
+        {deleteSuccess && (
+          <div className="alert alert-success text-center">{deleteSuccess}</div>
+        )}
 
-      {loading ? (
-        <div className="d-flex justify-content-center align-items-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
+        {loading ? (
+          <div className="d-flex justify-content-center align-items-center">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
           </div>
-        </div>
-      ) : error ? (
-        <div className="alert alert-danger text-center">{error}</div>
-      ) : searched && tickets.length === 0 ? (
-        <div className="alert alert-danger text-center">
-          No tickets found for the keyword "{keyword}"
-        </div>
-      ) : (
-        <div className="row">
-          {tickets.map((ticket) => (
-            <div key={ticket.id} className="col-md-4 mb-4">
-              {ticket.isDeleting ? (
-                <div className="card h-100 d-flex flex-column justify-content-center align-items-center">
-                  <div className="spinner-border text-danger" role="status">
-                    <span className="visually-hidden">Deleting...</span>
+        ) : error ? (
+          <div className="alert alert-danger text-center">{error}</div>
+        ) : searched && tickets.length === 0 ? (
+          <div className="alert alert-danger text-center">
+            No tickets found for the keyword "{keyword}"
+          </div>
+        ) : (
+          <div className="row">
+            {tickets.map((ticket) => (
+              <div key={ticket.id} className="col-md-4 mb-4">
+                {ticket.isDeleting ? (
+                  <div className="card hover-effect h-100 d-flex flex-column justify-content-center align-items-center">
+                    <TailSpin
+                      height="50"
+                      width="50"
+                      color="red"
+                      ariaLabel="tail-spin-loading"
+                      visible={true}
+                    />
+                    <p className="mt-2">Deleting...</p>
                   </div>
-                  <p className="mt-2">Deleting...</p>
-                </div>
-              ) : ticket.isDeleted ? (
-                <div className="card h-100 d-flex flex-column justify-content-center align-items-center">
-                  <p className="mt-2">
-                    <span style={{ fontSize: "18px" }}>Deleted.....!!</span>
-                  </p>
-                </div>
-              ) : (
-                <div className="card h-100 d-flex flex-column">
-                  <div className="card-body d-flex flex-column">
-                    <h5 className="card-title">Ticket ID: {ticket.id}</h5>
-                    <p className="card-text">
-                      <strong>Description:</strong>{" "}
-                      {highlightKeyword(ticket.description, keyword)}
-                    </p>
-                    <p className="card-text">
-                      <strong>Status:</strong> {ticket.status}
-                    </p>
-                    <p className="card-text">
-                      <strong>Location:</strong> {ticket.location}
-                    </p>
-                    <p className="card-text">
-                      <strong>Request Date:</strong> {ticket.request_date}
-                    </p>
-                    <p className="card-text">
-                      <strong>Shop:</strong> {ticket.shop}
-                    </p>
-                    <p className="card-text">
-                      <strong>Priority:</strong> {ticket.priority}
-                    </p>
-                    <div className="mt-auto">
-                      <button
-                        className="btn btn-secondary me-2"
-                        onClick={() => handleEdit(ticket)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => handleDelete(ticket.id)}
-                      >
-                        Delete
-                      </button>
+                ) : ticket.isDeleted ? (
+                  <div className="card hover-effect h-100 d-flex flex-column justify-content-center align-items-center">
+                    <div className="alert alert-success text-center w-75">
+                      <p>Deleted</p>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+                ) : (
+                  <div className="card hover-effect h-100 d-flex flex-column">
+                    <div className="card-body d-flex flex-column">
+                      <h5 className="card-title">Ticket ID: {ticket.id}</h5>
+                      <p className="card-text">
+                        <strong>Description:</strong>{" "}
+                        {highlightKeyword(ticket.description, keyword)}
+                      </p>
+                      <p className="card-text">
+                        <strong>Status:</strong> {ticket.status}
+                      </p>
+                      <p className="card-text">
+                        <strong>Location:</strong> {ticket.location}
+                      </p>
+                      <p className="card-text">
+                        <strong>Request Date:</strong> {ticket.request_date}
+                      </p>
+                      <p className="card-text">
+                        <strong>Shop:</strong> {ticket.shop}
+                      </p>
+                      <p className="card-text">
+                        <strong>Priority:</strong> {ticket.priority}
+                      </p>
+                      <div className="mt-auto">
+                        <button
+                          className="btn btn-secondary btn-sm me-2"
+                          onClick={() => handleEdit(ticket)}
+                        >
+                          <FontAwesomeIcon icon={faEdit} /> Edit
+                        </button>
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() => handleDelete(ticket.id)}
+                        >
+                          <FontAwesomeIcon icon={faTrash} /> Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
