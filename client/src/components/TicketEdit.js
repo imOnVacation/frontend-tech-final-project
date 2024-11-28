@@ -28,6 +28,21 @@ const TicketEdit = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    //Function to check if any changes have been made to the form
+    const isModified = Object.keys(formData).some(
+      (key) => formData[key] !== ticket[key]
+    );
+
+    if (!isModified) {
+      setMessage({
+        type: "info",
+        text: "No Changes Made",
+      });
+      setTimeout(() => navigate("/search"), 1000);
+      return;
+    }
+
     try {
       const response = await fetch(`/api/searchkey/ticket/${formData.id}`, {
         method: "PUT",
@@ -42,7 +57,7 @@ const TicketEdit = () => {
       }
 
       setMessage({ type: "success", text: "Ticket Updated Successfully!" });
-      setTimeout(() => navigate("/search"), 8000);
+      setTimeout(() => navigate("/search"), 5000);
     } catch (error) {
       setMessage({
         type: "error",
@@ -52,8 +67,7 @@ const TicketEdit = () => {
   };
 
   const handleCancel = () => {
-    setMessage({ type: "info", text: "No Changes Made" });
-    setTimeout(() => navigate("/search"), 2000);
+    setTimeout(() => navigate("/search"), 1000);
   };
 
   return (
@@ -84,6 +98,12 @@ const TicketEdit = () => {
             className={`alert ${
               message.type === "success" ? "alert-success" : "alert-danger"
             } text-center`}
+            style={{
+              maxWidth: "600px",
+              margin: "5px auto",
+              fontSize: "16px",
+              padding: "5px",
+            }}
           >
             {message.text}
           </div>
@@ -91,10 +111,11 @@ const TicketEdit = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label fw-bold">
+            <label className="form-label fw-bold" htmlFor="ticket-id">
               Ticket ID <span className="text-danger">*</span>
             </label>
             <input
+              id="ticket-id"
               type="text"
               className="form-control"
               value={formData.id}
@@ -106,12 +127,12 @@ const TicketEdit = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label fw-bold">
+            <label className="form-label fw-bold" htmlFor="ticket-description">
               Description <span className="text-danger">*</span>
             </label>
             <textarea
               className="form-control"
-              name="description"
+              id="ticket-description"
               value={formData.description}
               onChange={handleInputChange}
               required
@@ -122,13 +143,13 @@ const TicketEdit = () => {
           </div>
 
           <div className="mb-3">
-            <label htmlFor="status" className="form-label fw-bold">
+            <label className="form-label fw-bold" htmlFor="ticket-status">
               Status <span className="text-danger">*</span>
             </label>
             <select
               type="text"
               className="form-control"
-              name="status"
+              id="ticket-status"
               value={formData.status}
               onChange={handleInputChange}
               required
@@ -146,13 +167,13 @@ const TicketEdit = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label fw-bold">
+            <label className="form-label fw-bold" htmlFor="location">
               Location <span className="text-danger">*</span>
             </label>
             <input
               type="text"
               className="form-control"
-              name="location"
+              id="location"
               value={formData.location}
               onChange={handleInputChange}
               required
@@ -163,13 +184,13 @@ const TicketEdit = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label fw-bold">
+            <label className="form-label fw-bold" htmlFor="request_date">
               Request Date <span className="text-danger">*</span>
             </label>
             <input
               type="date"
               className="form-control"
-              name="request_date"
+              id="request_date"
               value={formData.request_date}
               onChange={handleInputChange}
               required
@@ -180,13 +201,13 @@ const TicketEdit = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label fw-bold">
+            <label className="form-label fw-bold" htmlFor="shop">
               Shop <span className="text-danger">*</span>
             </label>
             <input
               type="text"
               className="form-control"
-              name="shop"
+              id="shop"
               value={formData.shop}
               onChange={handleInputChange}
               required
@@ -197,12 +218,12 @@ const TicketEdit = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label fw-bold">
+            <label className="form-label fw-bold" htmlFor="priority">
               Priority <span className="text-danger">*</span>
             </label>
             <select
               className="form-control"
-              name="priority"
+              id="priority"
               value={formData.priority}
               onChange={handleInputChange}
               required

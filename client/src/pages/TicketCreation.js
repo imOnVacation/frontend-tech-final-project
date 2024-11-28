@@ -20,9 +20,10 @@ const TicketForm = () => {
     return `26-${randomDigits}`;
   };
 
+  // Generate an ID when the form loads
   useEffect(() => {
-    setId(generateTicketId()); // Generate an ID when the form loads
-  }, []); // Run only once when the component mounts
+    setId(generateTicketId());
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,7 +60,7 @@ const TicketForm = () => {
 
       setTimeout(() => {
         setShowModal(true);
-      }, 3000);
+      }, 2000);
     } catch (err) {
       setError(err.message || "An error occurred");
     }
@@ -78,7 +79,8 @@ const TicketForm = () => {
   const handleModalClose = () => {
     setShowModal(false);
     setSuccess(null);
-    setId(generateTicketId()); // Regenerate ticket ID when the modal closes
+    // Regenerate ticket ID when the modal closes
+    setId(generateTicketId());
     resetForm();
   };
 

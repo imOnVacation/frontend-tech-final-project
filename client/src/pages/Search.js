@@ -118,18 +118,32 @@ const Search = () => {
         <div className="mb-4 text-center">
           <input
             type="text"
+            id="search-tickets"
             className="form-control w-25 mx-auto"
             placeholder="Enter keyword"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
           />
+          <label for="search-tickets" className="visually-hidden">
+            Search
+          </label>
           <button className="btn btn-primary mt-3" onClick={handleSearch}>
             Search
           </button>
         </div>
 
         {deleteSuccess && (
-          <div className="alert alert-success text-center">{deleteSuccess}</div>
+          <div
+            className="alert alert-success text-center"
+            style={{
+              maxWidth: "500px",
+              margin: "5px auto",
+              fontSize: "16px",
+              padding: "5px",
+            }}
+          >
+            {deleteSuccess}
+          </div>
         )}
 
         {loading ? (
@@ -139,9 +153,27 @@ const Search = () => {
             </div>
           </div>
         ) : error ? (
-          <div className="alert alert-danger text-center">{error}</div>
+          <div
+            className="alert alert-danger text-center"
+            style={{
+              maxWidth: "500px",
+              margin: "5px auto",
+              fontSize: "16px",
+              padding: "5px",
+            }}
+          >
+            {error}
+          </div>
         ) : searched && tickets.length === 0 ? (
-          <div className="alert alert-danger text-center">
+          <div
+            className="alert alert-danger text-center"
+            style={{
+              maxWidth: "500px",
+              margin: "5px auto",
+              fontSize: "16px",
+              padding: "5px",
+            }}
+          >
             No tickets found for the keyword "{keyword}"
           </div>
         ) : (
@@ -161,7 +193,7 @@ const Search = () => {
                   </div>
                 ) : ticket.isDeleted ? (
                   <div className="card hover-effect h-100 d-flex flex-column justify-content-center align-items-center">
-                    <div className="alert alert-success text-center w-75">
+                    <div className="alert alert-success text-center w-75 ">
                       <p>Deleted</p>
                     </div>
                   </div>
