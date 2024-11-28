@@ -1,9 +1,12 @@
 import React from 'react';
+import TicketStatusGraph from '../components/TicketStatusGraph';
+import TicketTrendByShop from '../components/TicketTrendByShop';
 
 const Dashboard = () => {
   return (
     <div>
-      <h1>This is the Dashboard page</h1>
+      <TicketStatusGraph />
+      <TicketTrendByShop />
     </div>
   );
 };

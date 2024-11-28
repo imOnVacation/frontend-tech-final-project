@@ -3,3 +3,28 @@
   color: #000;
   border-radius: 5px;
 }
+
+.card {
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 300px; /* Ensures the card doesn't shrink */
+  display: flex;
+  flex-direction: column; /* Keeps content vertically aligned */
+}
+
+.card:hover {
+  transform: scale(1.05); /* Slight zoom-in effect */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+
+.home-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-message {
+  background: hsla(0, 0%, 100%, 0.218);
+  border-radius: 10px;
+
+}
