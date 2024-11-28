@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -6,54 +6,75 @@ import { useNavigate } from 'react-router-dom';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const TicketStatusOverview = ({ statusCounts, selectedMonth }) => {
+const TICKET_STATUSES = ['Open', 'WIP', 'Completed', 'Assigned', 'Cancelled'];
+
+const renderCard = (
+  status,
+  ticketCount,
+  isClickable,
+  selectedMonth,
+  navigate,
+  color
+) => (
+  <div
+    key={status}
+    className={`card m-2 text-center ${
+      isClickable ? 'clickable-card' : 'non-clickable-card'
+    }`}
+    style={{
+      width: '150px',
+      cursor: isClickable ? 'pointer' : 'default',
+      border: '1px solid #ddd',
+      borderRadius: '8px',
+      boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+    }}
+    onClick={() =>
+      isClickable &&
+      navigate(
+        `/tickets/list?month=${selectedMonth}&status=${encodeURIComponent(
+          status
+        )}`
+      )
+    }
+  >
+    <div className='card-body'>
+      <h5
+        className='card-title'
+        style={{
+          fontWeight: 'bold',
+          color: color,
+        }}
+      >
+        {status}
+      </h5>
+      <p
+        className='card-text'
+        style={{
+          fontSize: '1.2rem',
+          color: 'black',
+        }}
+      >
+        {ticketCount} Tickets
+      </p>
+    </div>
+  </div>
+);
+
+const TicketStatusOverview = ({ statusCounts, selectedMonth, colors }) => {
   const navigate = useNavigate();
 
   return (
     <div className='d-flex flex-wrap justify-content-center my-4'>
-      {['Open', 'WIP', 'Completed', 'Assigned', 'Cancelled'].map((status) => {
-        const ticketCount = statusCounts?.[status] || 0;
-        const isClickable = ticketCount > 0;
-
-        return (
-          <div
-            key={status}
-            className={`card m-2 text-center ${
-              isClickable ? 'clickable-card' : 'non-clickable-card'
-            }`}
-            style={{
-              width: '150px',
-              cursor: isClickable ? 'pointer' : 'default',
-              border: '1px solid #ddd',
-              borderRadius: '8px',
-              boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-            }}
-            onClick={() =>
-              isClickable &&
-              navigate(
-                `/tickets/list?month=${selectedMonth}&status=${encodeURIComponent(
-                  status
-                )}`
-              )
-            }
-          >
-            <div className='card-body'>
-              <h5 className='card-title' style={{ fontWeight: 'bold' }}>
-                {status}
-              </h5>
-              <p
-                className='card-text'
-                style={{
-                  fontSize: '1.2rem',
-                  color: isClickable ? 'DodgerBlue' : 'black',
-                }}
-              >
-                {ticketCount} Tickets
-              </p>
-            </div>
-          </div>
-        );
-      })}
+      {TICKET_STATUSES.map((status, index) =>
+        renderCard(
+          status,
+          statusCounts?.[status] || 0,
+          statusCounts?.[status] > 0,
+          selectedMonth,
+          navigate,
+          colors[index]
+        )
+      )}
     </div>
   );
 };
@@ -61,71 +82,68 @@ const TicketStatusOverview = ({ statusCounts, selectedMonth }) => {
 const TicketStatusGraph = () => {
   const [statusCounts, setStatusCounts] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchStatusCounts = async () => {
-      try {
-        const response = await fetch(
-          `/api/tickets/by-month?month=${selectedMonth}`
-        );
-        const data = await response.json();
-        setStatusCounts(data);
-      } catch (error) {
-        console.error('Error fetching status counts:', error);
-      }
-    };
-
-    fetchStatusCounts();
+  const fetchStatusCounts = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `/api/tickets/by-month?month=${selectedMonth}`
+      );
+      const data = await response.json();
+      setStatusCounts(data);
+    } catch (error) {
+      console.error('Error fetching status counts:', error);
+    } finally {
+      setIsLoading(false);
+    }
   }, [selectedMonth]);
 
-  const totalTickets =
-    (statusCounts?.Open || 0) +
-    (statusCounts?.WIP || 0) +
-    (statusCounts?.Completed || 0) +
-    (statusCounts?.Assigned || 0) +
-    (statusCounts?.Cancelled || 0);
+  useEffect(() => {
+    fetchStatusCounts();
+  }, [fetchStatusCounts]);
 
-  const calculatePercentages = (counts, total) => {
-    return {
-      Open: ((counts.Open || 0) / total) * 100,
-      WIP: ((counts.WIP || 0) / total) * 100,
-      Completed: ((counts.Completed || 0) / total) * 100,
-      Assigned: ((counts.Assigned || 0) / total) * 100,
-      Cancelled: ((counts.Cancelled || 0) / total) * 100,
-    };
-  };
-
+  const totalTickets = Object.values(statusCounts || {}).reduce(
+    (sum, count) => sum + count,
+    0
+  );
   const percentages =
-    totalTickets > 0 ? calculatePercentages(statusCounts, totalTickets) : null;
+    totalTickets > 0
+      ? TICKET_STATUSES.reduce((acc, status) => {
+          acc[status] = ((statusCounts?.[status] || 0) / totalTickets) * 100;
+          return acc;
+        }, {})
+      : null;
 
   const data = {
-    labels: ['Open', 'WIP', 'Completed', 'Assigned', 'Cancelled'],
+    labels: TICKET_STATUSES,
     datasets: [
       {
-        data: [
-          percentages?.Open || 0,
-          percentages?.WIP || 0,
-          percentages?.Completed || 0,
-          percentages?.Assigned || 0,
-          percentages?.Cancelled || 0,
+        data: percentages ? Object.values(percentages) : [],
+        backgroundColor: [
+          '#FF6384',
+          '#36A2EB',
+          '#FFCE56',
+          '#4BC0C0',
+          '#9966FF',
         ],
       },
     ],
   };
 
-  const options = {
+  const chartOptions = (totalTickets) => ({
     plugins: {
       tooltip: {
         callbacks: {
-          label: function (tooltipItem) {
-            const value = tooltipItem.raw.toFixed(2);
-            return ` ${value}%`;
-          },
+          label: (tooltipItem) => ` ${tooltipItem.raw.toFixed(2)}%`,
         },
+      },
+      legend: {
+        display: totalTickets > 0,
       },
     },
     maintainAspectRatio: false,
-  };
+  });
 
   return (
     <section className='container mt-5'>
@@ -137,7 +155,11 @@ const TicketStatusGraph = () => {
       </h1>
 
       <div className='mb-3 d-flex justify-content-center align-items-center'>
-        <label htmlFor='month-select' className='form-label me-2 mb-0'>
+        <label
+          htmlFor='month-select'
+          className='form-label me-2 mb-0'
+          aria-label='Select Month'
+        >
           Select Month:
         </label>
         <select
@@ -145,6 +167,7 @@ const TicketStatusGraph = () => {
           className='form-select w-auto'
           value={selectedMonth}
           onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+          aria-label='Month Selection'
         >
           {[...Array(12)].map((_, i) => (
             <option key={i + 1} value={i + 1}>
@@ -155,16 +178,18 @@ const TicketStatusGraph = () => {
       </div>
 
       <div className='d-flex justify-content-center align-items-center'>
-        {statusCounts ? (
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : statusCounts ? (
           totalTickets > 0 ? (
             <div style={{ width: '400px', height: '400px' }}>
-              <Doughnut data={data} options={options} />
+              <Doughnut data={data} options={chartOptions(totalTickets)} />
             </div>
           ) : (
             <div>No tickets available for the selected month.</div>
           )
         ) : (
-          <div>Loading...</div>
+          <div>Error fetching data. Please try again later.</div>
         )}
       </div>
 
@@ -172,6 +197,7 @@ const TicketStatusGraph = () => {
         <TicketStatusOverview
           statusCounts={statusCounts}
           selectedMonth={selectedMonth}
+          colors={data.datasets[0].backgroundColor}
         />
       )}
     </section>
