@@ -1,6 +1,5 @@
-const express = require('express');
-const fetchTickets = require('../api/fetchTickets.js');
-
+const express = require("express");
+const fetchTickets = require("../api/fetchTickets.js");
 const router = express.Router();
 
 router.get('/by-shop', async (req, res) => {
@@ -45,7 +44,7 @@ router.get('/list', async (req, res) => {
 
     if (!month || isNaN(month) || month < 1 || month > 12) {
       return res.status(400).json({
-        error: 'Invalid month. Please provide a value between 1 and 12.',
+        error: "Invalid month. Please provide a value between 1 and 12.",
       });
     }
 
@@ -57,7 +56,7 @@ router.get('/list', async (req, res) => {
 
     const tickets = await fetchTickets();
     if (!tickets) {
-      return res.status(500).json({ error: 'Failed to fetch tickets' });
+      return res.status(500).json({ error: "Failed to fetch tickets" });
     }
 
     const filteredTickets = tickets.filter((ticket) => {
@@ -77,23 +76,23 @@ router.get('/list', async (req, res) => {
       totalPages: Math.ceil(filteredTickets.length / size),
     });
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-router.get('/by-month', async (req, res) => {
+router.get("/by-month", async (req, res) => {
   try {
     const { month } = req.query;
 
     if (!month || isNaN(month) || month < 1 || month > 12) {
       return res.status(400).json({
-        error: 'Invalid month. Please provide a value between 1 and 12.',
+        error: "Invalid month. Please provide a value between 1 and 12.",
       });
     }
 
     const tickets = await fetchTickets();
     if (!tickets) {
-      return res.status(500).json({ error: 'Failed to fetch tickets' });
+      return res.status(500).json({ error: "Failed to fetch tickets" });
     }
 
     const filteredTickets = tickets.filter((ticket) => {
@@ -117,20 +116,20 @@ router.get('/by-month', async (req, res) => {
 
     res.status(200).json(statusCounts);
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const tickets = await fetchTickets();
 
     if (!tickets) {
-      return res.status(500).json({ error: 'Failed to fetch tickets' });
+      return res.status(500).json({ error: "Failed to fetch tickets" });
     }
     res.status(200).json(tickets);
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
