@@ -3,3 +3,24 @@
   color: #000;
   border-radius: 5px;
 }
+
+.card {
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: scale(1.05); /* Slight zoom-in effect */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+button {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
