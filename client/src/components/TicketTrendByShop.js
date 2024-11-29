@@ -98,7 +98,15 @@ const TicketTrendByShop = () => {
         </select>
       </div>
 
-      <div className='d-flex justify-content-center align-items-center'>
+      <div
+        className='d-flex justify-content-center align-items-center'
+        style={{
+          backgroundColor: '#f8f9fa',
+          borderRadius: '10px',
+          border: '1px solid #ccc',
+          padding: '1rem',
+        }}
+      >
         {isLoading ? (
           <div>Loading...</div>
         ) : lineChartData ? (
@@ -125,9 +133,13 @@ const TicketTrendByShop = () => {
             />
           </div>
         ) : selectedShop ? (
-          <div>No ticket data available for the selected shop.</div>
+          <div className='alert alert-danger' role='alert'>
+            No ticket data available for the selected shop.
+          </div>
         ) : (
-          <div>Please select a shop to view the trends.</div>
+          <div className='alert alert-danger' role='alert'>
+            Please select a shop to view the trends.
+          </div>
         )}
       </div>
     </section>

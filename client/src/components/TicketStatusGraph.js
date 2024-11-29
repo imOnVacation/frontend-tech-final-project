@@ -27,6 +27,7 @@ const renderCard = (
       border: '1px solid #ddd',
       borderRadius: '8px',
       boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+      minHeight: 'unset',
     }}
     onClick={() =>
       isClickable &&
@@ -140,6 +141,14 @@ const TicketStatusGraph = () => {
       },
       legend: {
         display: totalTickets > 0,
+        labels: {
+          color: 'white',
+          filter: (legendItem, data) => {
+            const dataset = data.datasets[0];
+            const value = dataset.data[legendItem.index];
+            return value > 0;
+          },
+        },
       },
     },
     maintainAspectRatio: false,
@@ -186,10 +195,14 @@ const TicketStatusGraph = () => {
               <Doughnut data={data} options={chartOptions(totalTickets)} />
             </div>
           ) : (
-            <div>No tickets available for the selected month.</div>
+            <div className='alert alert-danger' role='alert'>
+              No tickets available for the selected month.
+            </div>
           )
         ) : (
-          <div>Error fetching data. Please try again later.</div>
+          <div className='alert alert-danger' role='alert'>
+            Error fetching data. Please try again later.
+          </div>
         )}
       </div>
 
