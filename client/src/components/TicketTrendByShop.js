@@ -73,10 +73,7 @@ const TicketTrendByShop = () => {
 
   return (
     <section className='container my-5'>
-      <h1
-        className='text-center mb-4'
-        style={{ fontSize: '2rem', fontWeight: 'bold' }}
-      >
+      <h1 className='text-center mb-4 fw-bold'>
         Ticket Volume Trends Across Shops
       </h1>
 
@@ -98,25 +95,16 @@ const TicketTrendByShop = () => {
         </select>
       </div>
 
-      <div
-        className='d-flex justify-content-center align-items-center'
-        style={{
-          backgroundColor: '#f8f9fa',
-          borderRadius: '10px',
-          border: '1px solid #ccc',
-          padding: '1rem',
-        }}
-      >
+      <div className='d-flex justify-content-center align-items-center bg-light rounded border p-3'>
         {isLoading ? (
-          <div>Loading...</div>
-        ) : lineChartData ? (
-          <div
-            style={{
-              width: '100%',
-              maxWidth: '800px',
-              height: '400px',
-            }}
-          >
+          <div className='d-flex align-items-center'>
+            <div className='spinner-border text-primary me-2' role='status'>
+              <span className='visually-hidden'>Loading...</span>
+            </div>
+            <span className='text-dark'>Loading data...</span>
+          </div>
+        ) : lineChartData && lineChartData.labels.length > 0 ? (
+          <div className='w-100' style={{ maxWidth: '800px', height: '400px' }}>
             <Line
               data={{
                 labels: lineChartData.labels,
