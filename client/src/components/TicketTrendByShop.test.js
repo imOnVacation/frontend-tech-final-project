@@ -20,15 +20,21 @@ const TicketTrendByShop = () => {
     fetchShops();
   }, []);
 
-  return (
-    <div>
-      <div data-testid='selected-shop'>{selectedShop}</div>
-      <ul data-testid='shop-list'>
-        {shops.map((shop) => (
-          <li key={shop.shop}>{shop.shop}</li>
-        ))}
-      </ul>
-    </div>
+  return React.createElement(
+    'div',
+    null,
+    React.createElement(
+      'div',
+      { 'data-testid': 'selected-shop' },
+      selectedShop
+    ),
+    React.createElement(
+      'ul',
+      { 'data-testid': 'shop-list' },
+      shops.map((shop) =>
+        React.createElement('li', { key: shop.shop }, shop.shop)
+      )
+    )
   );
 };
 
@@ -43,7 +49,7 @@ describe('TicketTrendByShop Component', () => {
       json: jest.fn().mockResolvedValue(mockShops),
     });
 
-    render(<TicketTrendByShop />);
+    render(React.createElement(TicketTrendByShop));
 
     // Wait for the selected shop to be set and displayed
     await waitFor(() => {
