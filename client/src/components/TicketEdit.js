@@ -116,6 +116,7 @@ const TicketEdit = () => {
             </label>
             <input
               id="ticket-id"
+              name="id"
               type="text"
               className="form-control"
               value={formData.id}
@@ -133,6 +134,7 @@ const TicketEdit = () => {
             <textarea
               className="form-control"
               id="ticket-description"
+              name="description"
               value={formData.description}
               onChange={handleInputChange}
               required
@@ -150,6 +152,7 @@ const TicketEdit = () => {
               type="text"
               className="form-control"
               id="ticket-status"
+              name="status"
               value={formData.status}
               onChange={handleInputChange}
               required
@@ -174,6 +177,7 @@ const TicketEdit = () => {
               type="text"
               className="form-control"
               id="location"
+              name="location"
               value={formData.location}
               onChange={handleInputChange}
               required
@@ -191,6 +195,7 @@ const TicketEdit = () => {
               type="date"
               className="form-control"
               id="request_date"
+              name="request_date"
               value={formData.request_date}
               onChange={handleInputChange}
               required
@@ -208,6 +213,7 @@ const TicketEdit = () => {
               type="text"
               className="form-control"
               id="shop"
+              name="shop"
               value={formData.shop}
               onChange={handleInputChange}
               required
@@ -224,6 +230,7 @@ const TicketEdit = () => {
             <select
               className="form-control"
               id="priority"
+              name="priority"
               value={formData.priority}
               onChange={handleInputChange}
               required
