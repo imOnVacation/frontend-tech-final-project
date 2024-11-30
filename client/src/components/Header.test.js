@@ -5,7 +5,6 @@ import Header from './Header';
 
 describe('Header Component', () => {
   it('renders the header with correct links and branding', () => {
-    // Render Header within BrowserRouter to handle <Link>
     render(
       <BrowserRouter>
         <Header />
