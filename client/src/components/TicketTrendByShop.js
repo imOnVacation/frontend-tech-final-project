@@ -186,6 +186,7 @@ const TicketTrendByShop = () => {
           onChange={handleShopSelection}
           placeholder='Select shops...'
           styles={colourStyles}
+          aria-label='Shop selection dropdown'
         />
       </div>
 
