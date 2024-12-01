@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Select from 'react-select';
-import chroma from 'chroma-js';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 
@@ -10,34 +9,35 @@ const TicketTrendByShop = () => {
   const [lineChartData, setLineChartData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const distinguishableColors = [
-    '#e6194b',
-    '#3cb44b',
-    '#ffe119',
-    '#4363d8',
-    '#f58231',
-    '#911eb4',
-    '#46f0f0',
-    '#f032e6',
-    '#bcf60c',
-    '#fabebe',
-    '#008080',
-    '#e6beff',
-    '#9a6324',
-    '#000075',
-    '#800000',
-    '#aaffc3',
-    '#808000',
-    '#ffd8b1',
-    '#808080',
-    '#fffac8',
-  ];
+  const assignColorsToShops = useCallback((shops) => {
+    const distinguishableColors = [
+      '#e6194b',
+      '#3cb44b',
+      '#ffe119',
+      '#4363d8',
+      '#f58231',
+      '#911eb4',
+      '#46f0f0',
+      '#f032e6',
+      '#bcf60c',
+      '#fabebe',
+      '#008080',
+      '#e6beff',
+      '#9a6324',
+      '#000075',
+      '#800000',
+      '#aaffc3',
+      '#808000',
+      '#ffd8b1',
+      '#808080',
+      '#fffac8',
+    ];
 
-  const assignColorsToShops = (shops) =>
-    shops.map((shop, index) => ({
+    return shops.map((shop, index) => ({
       ...shop,
       color: distinguishableColors[index % distinguishableColors.length],
     }));
+  }, []);
 
   useEffect(() => {
     const fetchShops = async () => {
@@ -55,7 +55,7 @@ const TicketTrendByShop = () => {
     };
 
     fetchShops();
-  }, []);
+  }, [assignColorsToShops]);
 
   useEffect(() => {
     if (selectedShops.length === 0) return;
@@ -89,45 +89,40 @@ const TicketTrendByShop = () => {
     fetchLineChartData();
   }, [selectedShops]);
 
+  const applyAlphaToColor = (color, alpha) => {
+    const [r, g, b] = color
+      .replace('#', '')
+      .match(/.{1,2}/g)
+      .map((x) => parseInt(x, 16));
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
+
   const colourStyles = {
     control: (styles) => ({ ...styles, backgroundColor: 'white' }),
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-      const color = chroma(data.color);
-      return {
-        ...styles,
-        backgroundColor: isDisabled
-          ? undefined
-          : isSelected
-          ? data.color
-          : isFocused
-          ? color.alpha(0.1).css()
+    option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
+      ...styles,
+      backgroundColor: isDisabled
+        ? undefined
+        : isSelected
+        ? data.color
+        : isFocused
+        ? applyAlphaToColor(data.color, 0.1)
+        : undefined,
+      color: isDisabled ? '#ccc' : isSelected ? 'white' : data.color,
+      cursor: isDisabled ? 'not-allowed' : 'default',
+      ':active': {
+        ...styles[':active'],
+        backgroundColor: !isDisabled
+          ? isSelected
+            ? data.color
+            : applyAlphaToColor(data.color, 0.3)
           : undefined,
-        color: isDisabled
-          ? '#ccc'
-          : isSelected
-          ? chroma.contrast(color, 'white') > 2
-            ? 'white'
-            : 'black'
-          : data.color,
-        cursor: isDisabled ? 'not-allowed' : 'default',
-
-        ':active': {
-          ...styles[':active'],
-          backgroundColor: !isDisabled
-            ? isSelected
-              ? data.color
-              : color.alpha(0.3).css()
-            : undefined,
-        },
-      };
-    },
-    multiValue: (styles, { data }) => {
-      const color = chroma(data.color);
-      return {
-        ...styles,
-        backgroundColor: color.alpha(0.1).css(),
-      };
-    },
+      },
+    }),
+    multiValue: (styles, { data }) => ({
+      ...styles,
+      backgroundColor: applyAlphaToColor(data.color, 0.1),
+    }),
     multiValueLabel: (styles, { data }) => ({
       ...styles,
       color: data.color,
