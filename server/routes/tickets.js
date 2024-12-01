@@ -21,8 +21,8 @@ router.get('/by-shop', async (req, res) => {
     // Group tickets by month and count them
     const monthlyCounts = Array(12).fill(0);
     filteredTickets.forEach((ticket) => {
-      const ticketDate = new Date(ticket.request_date);
-      const monthIndex = ticketDate.getMonth();
+      const ticketDate = new Date(ticket.request_date + 'T00:00:00Z');
+      const monthIndex = ticketDate.getUTCMonth();
       monthlyCounts[monthIndex]++;
     });
 
