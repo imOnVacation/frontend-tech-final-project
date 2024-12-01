@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const TicketEdit = () => {
@@ -18,8 +18,23 @@ const TicketEdit = () => {
     shop: ticket?.shop || "",
     priority: ticket?.priority || "",
   });
-
+  const [shops, setShops] = useState([]);
   const [message, setMessage] = useState({ type: "", text: "" });
+
+  // Fetch Shops
+  useEffect(() => {
+    const fetchShops = async () => {
+      try {
+        const response = await fetch("/api/shops");
+        const data = await response.json();
+        setShops(data);
+      } catch (err) {
+        console.error("Error fetching shops:", err);
+      }
+    };
+
+    fetchShops();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -37,7 +52,11 @@ const TicketEdit = () => {
     if (!isModified) {
       setMessage({
         type: "info",
-        text: "No Changes Made",
+        text: (
+          <span style={{ fontWeight: "bold", padding: "10px" }}>
+            No New Changes Made!!
+          </span>
+        ),
       });
       setTimeout(() => navigate("/search"), 1000);
       return;
@@ -55,8 +74,15 @@ const TicketEdit = () => {
       if (!response.ok) {
         throw new Error("Failed to update the ticket");
       }
+      setMessage({
+        type: "success",
+        text: (
+          <span style={{ fontWeight: "bold", padding: "10px" }}>
+            Ticket Updated Successfully!!
+          </span>
+        ),
+      });
 
-      setMessage({ type: "success", text: "Ticket Updated Successfully!" });
       setTimeout(() => navigate("/search"), 5000);
     } catch (error) {
       setMessage({
@@ -92,7 +118,6 @@ const TicketEdit = () => {
         }}
       >
         <h1 className="my-2 text-center">Edit Ticket</h1>
-
         {message.text && (
           <div
             className={`alert ${
@@ -111,11 +136,11 @@ const TicketEdit = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label fw-bold" htmlFor="ticket-id">
+            <label htmlFor="id" className="form-label fw-bold">
               Ticket ID <span className="text-danger">*</span>
             </label>
             <input
-              id="ticket-id"
+              id="id"
               name="id"
               type="text"
               className="form-control"
@@ -128,12 +153,12 @@ const TicketEdit = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label fw-bold" htmlFor="ticket-description">
+            <label htmlFor="description" className="form-label fw-bold">
               Description <span className="text-danger">*</span>
             </label>
             <textarea
               className="form-control"
-              id="ticket-description"
+              id="description"
               name="description"
               value={formData.description}
               onChange={handleInputChange}
@@ -145,13 +170,13 @@ const TicketEdit = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label fw-bold" htmlFor="ticket-status">
+            <label htmlFor="status" className="form-label fw-bold">
               Status <span className="text-danger">*</span>
             </label>
             <select
               type="text"
               className="form-control"
-              id="ticket-status"
+              id="status"
               name="status"
               value={formData.status}
               onChange={handleInputChange}
@@ -160,17 +185,16 @@ const TicketEdit = () => {
                 backgroundColor: "#B0C4DE",
               }}
             >
-              <option value="">Select Status</option>
+              <option value="Open">Open</option>
+              <option value="WIP">WIP</option>
               <option value="Completed">Completed</option>
               <option value="Assigned">Assigned</option>
-              <option value="Open">Open</option>
               <option value="Cancelled">Cancelled</option>
-              <option value="WIP">WIP</option>
             </select>
           </div>
 
           <div className="mb-3">
-            <label className="form-label fw-bold" htmlFor="location">
+            <label htmlFor="location" className="form-label fw-bold">
               Location <span className="text-danger">*</span>
             </label>
             <input
@@ -188,7 +212,7 @@ const TicketEdit = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label fw-bold" htmlFor="request_date">
+            <label htmlFor="request_date" className="form-label fw-bold">
               Request Date <span className="text-danger">*</span>
             </label>
             <input
@@ -206,11 +230,10 @@ const TicketEdit = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label fw-bold" htmlFor="shop">
+            <label htmlFor="shop" className="form-label fw-bold">
               Shop <span className="text-danger">*</span>
             </label>
-            <input
-              type="text"
+            <select
               className="form-control"
               id="shop"
               name="shop"
@@ -220,11 +243,17 @@ const TicketEdit = () => {
               style={{
                 backgroundColor: "#B0C4DE",
               }}
-            />
+            >
+              {shops.map((shopItem, index) => (
+                <option key={index} value={shopItem.shop}>
+                  {shopItem.shop}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="mb-3">
-            <label className="form-label fw-bold" htmlFor="priority">
+            <label htmlFor="priority" className="form-label fw-bold">
               Priority <span className="text-danger">*</span>
             </label>
             <select
@@ -239,7 +268,7 @@ const TicketEdit = () => {
               }}
             >
               <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
+              <option value="Routine">Routine</option>
               <option value="High">High</option>
             </select>
           </div>
