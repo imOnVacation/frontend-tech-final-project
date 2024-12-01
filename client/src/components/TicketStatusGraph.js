@@ -188,7 +188,12 @@ const TicketStatusGraph = () => {
 
       <div className='d-flex justify-content-center align-items-center'>
         {isLoading ? (
-          <div>Loading...</div>
+          <div className='d-flex align-items-center'>
+            <div className='spinner-border text-primary me-2' role='status'>
+              <span className='visually-hidden'>Loading...</span>
+            </div>
+            <span className='text-white'>Loading data...</span>
+          </div>
         ) : statusCounts ? (
           totalTickets > 0 ? (
             <div style={{ width: '400px', height: '400px' }}>
@@ -206,7 +211,7 @@ const TicketStatusGraph = () => {
         )}
       </div>
 
-      {statusCounts && totalTickets > 0 && (
+      {!isLoading && statusCounts && totalTickets > 0 && (
         <TicketStatusOverview
           statusCounts={statusCounts}
           selectedMonth={selectedMonth}
