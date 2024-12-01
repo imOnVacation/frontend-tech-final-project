@@ -200,7 +200,7 @@ const TicketStatusGraph = () => {
               <Doughnut data={data} options={chartOptions(totalTickets)} />
             </div>
           ) : (
-            <div className='alert alert-danger' role='alert'>
+            <div className='alert alert-primary' role='alert'>
               No tickets available for the selected month.
             </div>
           )
