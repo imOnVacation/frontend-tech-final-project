@@ -110,7 +110,6 @@ const Search = () => {
         minHeight: "100vh",
         color: "white",
         padding: "20px",
-        borderRadius: "10px",
       }}
     >
       <div className="container mt-5">
