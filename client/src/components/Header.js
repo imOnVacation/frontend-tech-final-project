@@ -13,7 +13,7 @@ const Header = () => {
       }}
     >
       <Container>
-        <Navbar.Brand href='/' style={{ color: 'white' }}>
+        <Navbar.Brand href='/' style={{ color: 'white', fontWeight: 'bold' }}>
           Ticketify
         </Navbar.Brand>
         <Navbar.Toggle aria-controls='basic-navbar-nav' />
