@@ -12,7 +12,7 @@ describe('Header Component', () => {
     );
 
     // Check that the brand text is displayed
-    expect(screen.getByText(/Business Management Portal/i)).toBeInTheDocument();
+    expect(screen.getByText(/Ticketify/i)).toBeInTheDocument();
 
     // Check that navigation links are displayed and point to correct paths
     expect(screen.getByRole('link', { name: /Home/i })).toHaveAttribute(
