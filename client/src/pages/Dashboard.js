@@ -4,7 +4,7 @@ import TicketTrendByShop from '../components/TicketTrendByShop';
 
 const Dashboard = () => {
   return (
-    <div>
+    <div className='pages-bg'>
       <TicketStatusGraph />
       <TicketTrendByShop />
     </div>

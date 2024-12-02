@@ -1,42 +1,84 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import Select from 'react-select';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 
 const TicketTrendByShop = () => {
   const [shops, setShops] = useState([]);
-  const [selectedShop, setSelectedShop] = useState('');
+  const [selectedShops, setSelectedShops] = useState([]);
   const [lineChartData, setLineChartData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const assignColorsToShops = useCallback((shops) => {
+    const distinguishableColors = [
+      '#e6194b',
+      '#3cb44b',
+      '#ffe119',
+      '#4363d8',
+      '#f58231',
+      '#911eb4',
+      '#46f0f0',
+      '#f032e6',
+      '#bcf60c',
+      '#fabebe',
+      '#008080',
+      '#e6beff',
+      '#9a6324',
+      '#000075',
+      '#800000',
+      '#aaffc3',
+      '#808000',
+      '#ffd8b1',
+      '#808080',
+      '#fffac8',
+    ];
+
+    return shops.map((shop, index) => ({
+      ...shop,
+      color: distinguishableColors[index % distinguishableColors.length],
+    }));
+  }, []);
 
   useEffect(() => {
     const fetchShops = async () => {
       try {
         const response = await fetch('/api/shops');
         const data = await response.json();
-        setShops(data);
-
-        if (data.length > 0) {
-          setSelectedShop(data[0].shop);
-        }
+        setShops(
+          assignColorsToShops(
+            data.map((shop) => ({ label: shop.shop, value: shop.shop }))
+          )
+        );
       } catch (error) {
         console.error('Error fetching shops:', error);
       }
     };
 
     fetchShops();
-  }, []);
+  }, [assignColorsToShops]);
 
   useEffect(() => {
-    if (!selectedShop) return;
+    if (selectedShops.length === 0) return;
 
     const fetchLineChartData = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(
-          `/api/tickets/by-shop?shop=${selectedShop}`
+        const responses = await Promise.all(
+          selectedShops.map((shop) =>
+            fetch(`/api/tickets/by-shop?shop=${shop.value}`)
+          )
         );
-        const data = await response.json();
-        setLineChartData(data);
+        const dataSets = await Promise.all(responses.map((res) => res.json()));
+
+        const labels = dataSets[0]?.labels || [];
+        const datasets = dataSets.map((data, index) => ({
+          label: `Tickets for ${selectedShops[index].value}`,
+          data: data.data,
+          borderColor: selectedShops[index].color,
+          fill: false,
+        }));
+
+        setLineChartData({ labels, datasets });
       } catch (error) {
         console.error('Error fetching ticket trend data:', error);
       } finally {
@@ -45,14 +87,62 @@ const TicketTrendByShop = () => {
     };
 
     fetchLineChartData();
-  }, [selectedShop]);
+  }, [selectedShops]);
+
+  const applyAlphaToColor = (color, alpha) => {
+    const [r, g, b] = color
+      .replace('#', '')
+      .match(/.{1,2}/g)
+      .map((x) => parseInt(x, 16));
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
+
+  const colourStyles = {
+    control: (styles) => ({ ...styles, backgroundColor: 'white' }),
+    option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
+      ...styles,
+      backgroundColor: isDisabled
+        ? undefined
+        : isSelected
+        ? data.color
+        : isFocused
+        ? applyAlphaToColor(data.color, 0.1)
+        : undefined,
+      color: isDisabled ? '#ccc' : isSelected ? 'white' : data.color,
+      cursor: isDisabled ? 'not-allowed' : 'default',
+      ':active': {
+        ...styles[':active'],
+        backgroundColor: !isDisabled
+          ? isSelected
+            ? data.color
+            : applyAlphaToColor(data.color, 0.3)
+          : undefined,
+      },
+    }),
+    multiValue: (styles, { data }) => ({
+      ...styles,
+      backgroundColor: applyAlphaToColor(data.color, 0.1),
+    }),
+    multiValueLabel: (styles, { data }) => ({
+      ...styles,
+      color: data.color,
+    }),
+    multiValueRemove: (styles, { data }) => ({
+      ...styles,
+      color: data.color,
+      ':hover': {
+        backgroundColor: data.color,
+        color: 'white',
+      },
+    }),
+  };
 
   const lineChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false,
+        display: true,
       },
     },
     scales: {
@@ -71,63 +161,55 @@ const TicketTrendByShop = () => {
     },
   };
 
+  const handleShopSelection = (selectedOptions) => {
+    setSelectedShops(selectedOptions || []);
+    if (!selectedOptions || selectedOptions.length === 0) {
+      setLineChartData(null);
+    }
+  };
+
   return (
     <section className='container my-5'>
-      <h1
-        className='text-center mb-4'
-        style={{ fontSize: '2rem', fontWeight: 'bold' }}
-      >
+      <h1 className='text-center mb-4 fw-bold'>
         Ticket Volume Trends Across Shops
       </h1>
 
-      <div className='mb-3 d-flex justify-content-center align-items-center'>
-        <label htmlFor='shop-select' className='form-label me-2 mb-0'>
-          Select Shop:
+      <div className='mb-3'>
+        <label htmlFor='shop-select' className='form-label'>
+          Select Shop(s):
         </label>
-        <select
+        <Select
           id='shop-select'
-          className='form-select w-auto'
-          value={selectedShop}
-          onChange={(e) => setSelectedShop(e.target.value)}
-        >
-          {shops.map((shop) => (
-            <option key={shop.shop} value={shop.shop}>
-              {shop.shop}
-            </option>
-          ))}
-        </select>
+          options={shops}
+          isMulti
+          value={selectedShops}
+          onChange={handleShopSelection}
+          placeholder='Select shops...'
+          styles={colourStyles}
+          aria-label='Shop selection dropdown'
+        />
       </div>
 
-      <div className='d-flex justify-content-center align-items-center'>
+      <div className='d-flex justify-content-center align-items-center bg-light rounded border p-3'>
         {isLoading ? (
-          <div>Loading...</div>
-        ) : lineChartData ? (
-          <div
-            style={{
-              width: '100%',
-              maxWidth: '800px',
-              height: '400px',
-            }}
-          >
-            <Line
-              data={{
-                labels: lineChartData.labels,
-                datasets: [
-                  {
-                    label: `Tickets for ${selectedShop}`,
-                    data: lineChartData.data,
-                    borderColor: 'rgba(75,192,192,1)',
-                    fill: false,
-                  },
-                ],
-              }}
-              options={lineChartOptions}
-            />
+          <div className='d-flex align-items-center'>
+            <div className='spinner-border text-primary me-2' role='status'>
+              <span className='visually-hidden'>Loading...</span>
+            </div>
+            <span className='text-dark'>Loading data...</span>
           </div>
-        ) : selectedShop ? (
-          <div>No ticket data available for the selected shop.</div>
+        ) : lineChartData && lineChartData.datasets.length > 0 ? (
+          <div className='w-100' style={{ maxWidth: '800px', height: '400px' }}>
+            <Line data={lineChartData} options={lineChartOptions} />
+          </div>
+        ) : selectedShops.length > 0 ? (
+          <div className='alert alert-danger' role='alert'>
+            No ticket data available for the selected shops.
+          </div>
         ) : (
-          <div>Please select a shop to view the trends.</div>
+          <div className='alert alert-primary' role='alert'>
+            Please select shop(s) to view the trends.
+          </div>
         )}
       </div>
     </section>
