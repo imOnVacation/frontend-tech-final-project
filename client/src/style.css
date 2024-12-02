@@ -27,3 +27,10 @@
   background: hsla(0, 0%, 100%, 0.218);
   border-radius: 10px;
 }
+
+.pages-bg {
+  background: linear-gradient(90deg, #2c3e50, #4169e1);
+  color: white;
+  min-height: 100vh;
+  padding: 20px;
+}
