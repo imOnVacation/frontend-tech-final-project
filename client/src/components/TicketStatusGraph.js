@@ -52,7 +52,6 @@ const renderCard = (
       <h5
         className='card-title'
         style={{
-          fontWeight: 'bold',
           color: getContrastColor(color),
         }}
       >

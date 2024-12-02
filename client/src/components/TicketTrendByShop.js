@@ -107,6 +107,11 @@ const TicketTrendByShop = () => {
         borderColor: '#888',
       },
     }),
+    placeholder: (styles) => ({
+      ...styles,
+      color: '#444',
+      fontWeight: 'bold',
+    }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
       ...styles,
       backgroundColor: isDisabled
@@ -183,7 +188,7 @@ const TicketTrendByShop = () => {
       </h1>
 
       <div className='mb-3'>
-        <label htmlFor='shop-select' className='form-label'>
+        <label htmlFor='shop-select' className='form-label custom-label'>
           Select Shop(s):
         </label>
         <Select
