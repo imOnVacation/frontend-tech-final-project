@@ -8,6 +8,15 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const TICKET_STATUSES = ['Open', 'WIP', 'Completed', 'Assigned', 'Cancelled'];
 
+const getContrastColor = (bgColor) => {
+  const hex = bgColor.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.5 ? '#000000' : '#FFFFFF';
+};
+
 const renderCard = (
   status,
   ticketCount,
@@ -27,6 +36,8 @@ const renderCard = (
       border: '1px solid #ddd',
       borderRadius: '8px',
       boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+      minHeight: 'unset',
+      backgroundColor: color,
     }}
     onClick={() =>
       isClickable &&
@@ -41,8 +52,7 @@ const renderCard = (
       <h5
         className='card-title'
         style={{
-          fontWeight: 'bold',
-          color: color,
+          color: getContrastColor(color),
         }}
       >
         {status}
@@ -51,7 +61,7 @@ const renderCard = (
         className='card-text'
         style={{
           fontSize: '1.2rem',
-          color: 'black',
+          color: getContrastColor(color),
         }}
       >
         {ticketCount} Tickets
@@ -140,6 +150,14 @@ const TicketStatusGraph = () => {
       },
       legend: {
         display: totalTickets > 0,
+        labels: {
+          color: 'white',
+          filter: (legendItem, data) => {
+            const dataset = data.datasets[0];
+            const value = dataset.data[legendItem.index];
+            return value > 0;
+          },
+        },
       },
     },
     maintainAspectRatio: false,
@@ -179,21 +197,30 @@ const TicketStatusGraph = () => {
 
       <div className='d-flex justify-content-center align-items-center'>
         {isLoading ? (
-          <div>Loading...</div>
+          <div className='d-flex align-items-center'>
+            <div className='spinner-border text-primary me-2' role='status'>
+              <span className='visually-hidden'>Loading...</span>
+            </div>
+            <span className='text-white'>Loading data...</span>
+          </div>
         ) : statusCounts ? (
           totalTickets > 0 ? (
             <div style={{ width: '400px', height: '400px' }}>
               <Doughnut data={data} options={chartOptions(totalTickets)} />
             </div>
           ) : (
-            <div>No tickets available for the selected month.</div>
+            <div className='alert alert-primary' role='alert'>
+              No tickets available for the selected month.
+            </div>
           )
         ) : (
-          <div>Error fetching data. Please try again later.</div>
+          <div className='alert alert-danger' role='alert'>
+            Error fetching data. Please try again later.
+          </div>
         )}
       </div>
 
-      {statusCounts && totalTickets > 0 && (
+      {!isLoading && statusCounts && totalTickets > 0 && (
         <TicketStatusOverview
           statusCounts={statusCounts}
           selectedMonth={selectedMonth}

@@ -8,6 +8,7 @@ const TicketForm = () => {
   const [location, setLocation] = useState("");
   const [request_date, setRequestDate] = useState("");
   const [shop, setShop] = useState("");
+  const [shops, setShops] = useState([]);
   const [priority, setPriority] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -23,6 +24,20 @@ const TicketForm = () => {
   // Generate an ID when the form loads
   useEffect(() => {
     setId(generateTicketId());
+  }, []);
+
+  // Fetch shops
+  useEffect(() => {
+    const fetchShops = async () => {
+      try {
+        const response = await fetch("/api/shops");
+        const data = await response.json();
+        setShops(data);
+      } catch (err) {
+        console.error("Error fetching shops:", err);
+      }
+    };
+    fetchShops();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -50,14 +65,17 @@ const TicketForm = () => {
       });
 
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.error || "An error occurred");
       }
 
-      setSuccess(data.message);
+      setSuccess(
+        <span style={{ fontWeight: "bold" }}>
+          Ticket Submitted Successfully!!
+        </span>
+      );
       setSubmittedData(formData);
-
+      // Display Modal
       setTimeout(() => {
         setShowModal(true);
       }, 2000);
@@ -104,7 +122,6 @@ const TicketForm = () => {
         }}
       >
         <h1 className="my-2 text-center">Create New Ticket</h1>
-
         {error && (
           <div className="alert alert-danger d-flex justify-content-center align-items-center">
             {error}
@@ -165,11 +182,11 @@ const TicketForm = () => {
               required
             >
               <option value="">Choose Status Option</option>
+              <option value="Open">Open</option>
+              <option value="WIP">WIP</option>
               <option value="Completed">Completed</option>
               <option value="Assigned">Assigned</option>
-              <option value="Open">Open</option>
               <option value="Cancelled">Cancelled</option>
-              <option value="WIP">WIP</option>
             </select>
           </div>
 
@@ -211,9 +228,8 @@ const TicketForm = () => {
             <label htmlFor="shop" className="form-label fw-bold">
               Shop <span className="text-danger">*</span>
             </label>
-            <input
-              type="text"
-              className="form-control"
+            <select
+              className="form-select"
               style={{
                 backgroundColor: "#B0C4DE",
               }}
@@ -221,7 +237,14 @@ const TicketForm = () => {
               value={shop}
               onChange={(e) => setShop(e.target.value)}
               required
-            />
+            >
+              <option value="">Choose Shop Option</option>
+              {shops.map((shopItem, index) => (
+                <option key={index} value={shopItem.shop}>
+                  {shopItem.shop}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="mb-3">
@@ -240,8 +263,8 @@ const TicketForm = () => {
             >
               <option value="">Choose Priority Option</option>
               <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
               <option value="Routine">Routine</option>
+              <option value="High">High</option>
             </select>
           </div>
 
@@ -274,13 +297,7 @@ const TicketForm = () => {
               borderRadius: "10px",
             }}
           >
-            <Modal.Header
-              closeButton={false}
-              style={{
-                background: "linear-gradient(90deg, #2C3E50, #4169E1)",
-                color: "#D3D3D3",
-              }}
-            >
+            <Modal.Header>
               <Modal.Title>Ticket Details</Modal.Title>
             </Modal.Header>
             <Modal.Body
