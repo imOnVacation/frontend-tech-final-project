@@ -41,6 +41,6 @@ describe('Header Component', () => {
 
     // Check for the background color of the Navbar using its accessible role
     const navbar = screen.getByRole('navigation');
-    expect(navbar).toHaveStyle('background: #5B7F96');
+    expect(navbar).toHaveStyle('background: #2C3E50');
   });
 });

@@ -8,6 +8,15 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const TICKET_STATUSES = ['Open', 'WIP', 'Completed', 'Assigned', 'Cancelled'];
 
+const getContrastColor = (bgColor) => {
+  const hex = bgColor.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.5 ? '#000000' : '#FFFFFF';
+};
+
 const renderCard = (
   status,
   ticketCount,
@@ -28,6 +37,7 @@ const renderCard = (
       borderRadius: '8px',
       boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
       minHeight: 'unset',
+      backgroundColor: color,
     }}
     onClick={() =>
       isClickable &&
@@ -42,8 +52,7 @@ const renderCard = (
       <h5
         className='card-title'
         style={{
-          fontWeight: 'bold',
-          color: color,
+          color: getContrastColor(color),
         }}
       >
         {status}
@@ -52,7 +61,7 @@ const renderCard = (
         className='card-text'
         style={{
           fontSize: '1.2rem',
-          color: 'black',
+          color: getContrastColor(color),
         }}
       >
         {ticketCount} Tickets

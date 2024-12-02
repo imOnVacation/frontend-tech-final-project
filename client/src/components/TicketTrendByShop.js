@@ -98,7 +98,20 @@ const TicketTrendByShop = () => {
   };
 
   const colourStyles = {
-    control: (styles) => ({ ...styles, backgroundColor: 'white' }),
+    control: (styles) => ({
+      ...styles,
+      backgroundColor: 'white',
+      borderColor: '#ccc',
+      boxShadow: 'none',
+      ':hover': {
+        borderColor: '#888',
+      },
+    }),
+    placeholder: (styles) => ({
+      ...styles,
+      color: '#444',
+      fontWeight: 'bold',
+    }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
       ...styles,
       backgroundColor: isDisabled
@@ -106,9 +119,9 @@ const TicketTrendByShop = () => {
         : isSelected
         ? data.color
         : isFocused
-        ? applyAlphaToColor(data.color, 0.1)
+        ? applyAlphaToColor(data.color, 0.15)
         : undefined,
-      color: isDisabled ? '#ccc' : isSelected ? 'white' : data.color,
+      color: isDisabled ? '#ccc' : isSelected ? '#FFFFFF' : '#000000',
       cursor: isDisabled ? 'not-allowed' : 'default',
       ':active': {
         ...styles[':active'],
@@ -121,18 +134,18 @@ const TicketTrendByShop = () => {
     }),
     multiValue: (styles, { data }) => ({
       ...styles,
-      backgroundColor: applyAlphaToColor(data.color, 0.1),
+      backgroundColor: applyAlphaToColor(data.color, 0.15),
     }),
     multiValueLabel: (styles, { data }) => ({
       ...styles,
-      color: data.color,
+      color: '#000000',
     }),
     multiValueRemove: (styles, { data }) => ({
       ...styles,
-      color: data.color,
+      color: '#000000',
       ':hover': {
         backgroundColor: data.color,
-        color: 'white',
+        color: '#FFFFFF',
       },
     }),
   };
@@ -175,7 +188,7 @@ const TicketTrendByShop = () => {
       </h1>
 
       <div className='mb-3'>
-        <label htmlFor='shop-select' className='form-label'>
+        <label htmlFor='shop-select' className='form-label custom-label'>
           Select Shop(s):
         </label>
         <Select

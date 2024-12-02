@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../style.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { TailSpin } from "react-loader-spinner";
+import "../style.css";
 
 const Search = () => {
   const [keyword, setKeyword] = useState("");
@@ -12,6 +12,7 @@ const Search = () => {
   const [error, setError] = useState(null);
   const [searched, setSearched] = useState(false);
   const [deleteSuccess, setDeleteSuccess] = useState("");
+
   const navigate = useNavigate();
 
   const handleSearch = async () => {
@@ -29,7 +30,6 @@ const Search = () => {
       const response = await fetch(
         `/api/searchkey/by-keyword?keyword=${keyword}`
       );
-
       if (!response.ok) {
         throw new Error("Failed to fetch tickets");
       }
@@ -54,15 +54,12 @@ const Search = () => {
     try {
       // Simulate a delay
       await new Promise((resolve) => setTimeout(resolve, 2000));
-
       const response = await fetch(`/api/searchkey/ticket/${ticketId}`, {
         method: "DELETE",
       });
-
       if (!response.ok) {
         throw new Error("Failed to delete ticket");
       }
-
       setTickets((prevTickets) =>
         prevTickets.map((ticket) =>
           ticket.id === ticketId
@@ -75,7 +72,11 @@ const Search = () => {
         setTickets((prevTickets) =>
           prevTickets.filter((ticket) => ticket.id !== ticketId)
         );
-        setDeleteSuccess(`Ticket ${ticketId} deleted successfully`);
+        setDeleteSuccess(
+          <span style={{ fontWeight: "bold" }}>
+            Ticket {ticketId} Deleted successfully
+          </span>
+        );
 
         window.scrollTo({ top: 0, behavior: "smooth" });
         setTimeout(() => {
@@ -109,12 +110,10 @@ const Search = () => {
         minHeight: "100vh",
         color: "white",
         padding: "20px",
-        borderRadius: "10px",
       }}
     >
       <div className="container mt-5">
         <h1 className="text-center mb-4">Search Tickets by Keyword</h1>
-
         <div className="mb-4 text-center">
           <input
             type="text"
@@ -136,10 +135,10 @@ const Search = () => {
           <div
             className="alert alert-success text-center"
             style={{
-              maxWidth: "500px",
-              margin: "5px auto",
+              maxWidth: "800px",
+              margin: "10px auto",
               fontSize: "16px",
-              padding: "5px",
+              padding: "15px",
             }}
           >
             {deleteSuccess}
@@ -156,10 +155,10 @@ const Search = () => {
           <div
             className="alert alert-danger text-center"
             style={{
-              maxWidth: "500px",
+              maxWidth: "800px",
               margin: "5px auto",
               fontSize: "16px",
-              padding: "5px",
+              padding: "10px",
             }}
           >
             {error}
@@ -168,13 +167,13 @@ const Search = () => {
           <div
             className="alert alert-danger text-center"
             style={{
-              maxWidth: "500px",
+              maxWidth: "800px",
               margin: "5px auto",
               fontSize: "16px",
-              padding: "5px",
+              padding: "10px",
             }}
           >
-            No tickets found for the keyword "{keyword}"
+            <strong>No tickets found for the keyword "{keyword}"</strong>
           </div>
         ) : (
           <div className="row">
@@ -189,12 +188,16 @@ const Search = () => {
                       ariaLabel="tail-spin-loading"
                       visible={true}
                     />
-                    <p className="mt-2">Deleting...</p>
+                    <p className="mt-2">
+                      <strong>Deleting...</strong>
+                    </p>
                   </div>
                 ) : ticket.isDeleted ? (
                   <div className="card hover-effect h-100 d-flex flex-column justify-content-center align-items-center">
-                    <div className="alert alert-success text-center w-75 ">
-                      <p>Deleted</p>
+                    <div>
+                      <p className="mt-2">
+                        <strong>Deleted!!!</strong>
+                      </p>
                     </div>
                   </div>
                 ) : (
