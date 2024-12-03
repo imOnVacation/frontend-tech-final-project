@@ -3,6 +3,11 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import TicketTrendByShop from './TicketTrendByShop';
 
+const backendUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'https://ticketify-server.vercel.app'
+    : 'http://localhost:5000';
+
 global.fetch = jest.fn();
 
 beforeEach(() => {
@@ -35,7 +40,7 @@ describe('TicketTrendByShop Component', () => {
     render(<TicketTrendByShop />);
 
     await waitFor(() => {
-      expect(fetch).toHaveBeenCalledWith('/api/shops');
+      expect(fetch).toHaveBeenCalledWith(`${backendUrl}/api/shops`);
     });
 
     const shopSelect = screen.getByRole('combobox');
@@ -69,7 +74,7 @@ describe('TicketTrendByShop Component', () => {
     render(<TicketTrendByShop />);
 
     await waitFor(() => {
-      expect(fetch).toHaveBeenCalledWith('/api/shops');
+      expect(fetch).toHaveBeenCalledWith(`${backendUrl}/api/shops`);
     });
 
     const shopSelect = screen.getByRole('combobox');
@@ -91,7 +96,7 @@ describe('TicketTrendByShop Component', () => {
     render(<TicketTrendByShop />);
 
     await waitFor(() => {
-      expect(fetch).toHaveBeenCalledWith('/api/shops');
+      expect(fetch).toHaveBeenCalledWith(`${backendUrl}/api/shops`);
     });
 
     expect(

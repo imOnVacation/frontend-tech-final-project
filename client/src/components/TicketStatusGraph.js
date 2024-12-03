@@ -7,6 +7,10 @@ import { useNavigate } from 'react-router-dom';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const TICKET_STATUSES = ['Open', 'WIP', 'Completed', 'Assigned', 'Cancelled'];
+const backendUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'https://ticketify-server.vercel.app'
+    : 'http://localhost:5000';
 
 const getContrastColor = (bgColor) => {
   const hex = bgColor.replace('#', '');
@@ -98,7 +102,7 @@ const TicketStatusGraph = () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `/api/tickets/by-month?month=${selectedMonth}`
+        `${backendUrl}/api/tickets/by-month?month=${selectedMonth}`
       );
       const data = await response.json();
       setStatusCounts(data);
