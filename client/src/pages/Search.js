@@ -22,11 +22,7 @@ const Search = () => {
 
   const handleSearch = async () => {
     if (!keyword.trim()) {
-
-
       setError("Please enter a valid keyword");
-
-
       return;
     }
 
@@ -150,14 +146,9 @@ const Search = () => {
             className="btn btn-primary mt-3"
             onClick={handleSearch}
             aria-label="Search Tickets"
-
           >
-
-          
-
             Search
           </button>
-
         </div>
 
         {deleteSuccess && (
