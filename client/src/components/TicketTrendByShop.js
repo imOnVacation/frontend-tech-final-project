@@ -3,6 +3,11 @@ import Select from 'react-select';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 
+const backendUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'https://ticketify-server.vercel.app'
+    : 'http://localhost:5000';
+
 const TicketTrendByShop = () => {
   const [shops, setShops] = useState([]);
   const [selectedShops, setSelectedShops] = useState([]);
@@ -42,7 +47,7 @@ const TicketTrendByShop = () => {
   useEffect(() => {
     const fetchShops = async () => {
       try {
-        const response = await fetch('/api/shops');
+        const response = await fetch(`${backendUrl}/api/shops`);
         const data = await response.json();
         setShops(
           assignColorsToShops(
@@ -65,7 +70,7 @@ const TicketTrendByShop = () => {
       try {
         const responses = await Promise.all(
           selectedShops.map((shop) =>
-            fetch(`/api/tickets/by-shop?shop=${shop.value}`)
+            fetch(`${backendUrl}/api/tickets/by-shop?shop=${shop.value}`)
           )
         );
         const dataSets = await Promise.all(responses.map((res) => res.json()));

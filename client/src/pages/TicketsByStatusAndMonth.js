@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { TailSpin } from 'react-loader-spinner';
 
+const backendUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'https://ticketify-server.vercel.app'
+    : 'http://localhost:5000';
+
 const TicketsByStatusAndMonth = () => {
   const [searchParams] = useSearchParams();
   const [tickets, setTickets] = useState([]);
@@ -16,7 +21,7 @@ const TicketsByStatusAndMonth = () => {
     const fetchTickets = async () => {
       try {
         const response = await fetch(
-          `/api/tickets/list?month=${month}&status=${status}&page=${currentPage}&size=${ticketsPerPage}`
+          `${backendUrl}/api/tickets/list?month=${month}&status=${status}&page=${currentPage}&size=${ticketsPerPage}`
         );
         const data = await response.json();
         setTickets(data.tickets);
