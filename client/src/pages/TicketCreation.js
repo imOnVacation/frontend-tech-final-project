@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Modal } from "react-bootstrap";
 
 const TicketForm = () => {
@@ -14,6 +14,9 @@ const TicketForm = () => {
   const [success, setSuccess] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
+
+  // Ref for the close button
+  const closeButtonRef = useRef(null);
 
   // Function to generate Ticket ID in the format '26-xxxxx'
   const generateTicketId = () => {
@@ -39,6 +42,13 @@ const TicketForm = () => {
     };
     fetchShops();
   }, []);
+
+  // Focus the close button when the modal opens
+  useEffect(() => {
+    if (showModal && closeButtonRef.current) {
+      closeButtonRef.current.focus();
+    }
+  }, [showModal]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -123,12 +133,18 @@ const TicketForm = () => {
       >
         <h1 className="my-2 text-center">Create New Ticket</h1>
         {error && (
-          <div className="alert alert-danger d-flex justify-content-center align-items-center">
+          <div
+            className="alert alert-danger d-flex justify-content-center align-items-center"
+            role="alert"
+          >
             {error}
           </div>
         )}
         {success && (
-          <div className="alert alert-success d-flex justify-content-center align-items-center">
+          <div
+            className="alert alert-success d-flex justify-content-center align-items-center"
+            role="alert"
+          >
             {success}
           </div>
         )}
@@ -180,8 +196,11 @@ const TicketForm = () => {
               value={status}
               onChange={(e) => setStatus(e.target.value)}
               required
+              aria-label="Select Ticket Status from the Dropdown"
             >
-              <option value="">Choose Status Option</option>
+              <option value="" disabled>
+                Choose Status Option
+              </option>
               <option value="Open">Open</option>
               <option value="WIP">WIP</option>
               <option value="Completed">Completed</option>
@@ -189,7 +208,6 @@ const TicketForm = () => {
               <option value="Cancelled">Cancelled</option>
             </select>
           </div>
-
           <div className="mb-3">
             <label htmlFor="location" className="form-label fw-bold">
               Location <span className="text-danger">*</span>
@@ -206,7 +224,6 @@ const TicketForm = () => {
               required
             />
           </div>
-
           <div className="mb-3">
             <label htmlFor="request_date" className="form-label fw-bold">
               Request Date <span className="text-danger">*</span>
@@ -237,8 +254,11 @@ const TicketForm = () => {
               value={shop}
               onChange={(e) => setShop(e.target.value)}
               required
+              aria-label="Select the Shop from the Dropdown"
             >
-              <option value="">Choose Shop Option</option>
+              <option value="" disabled>
+                Choose Shop Option
+              </option>
               {shops.map((shopItem, index) => (
                 <option key={index} value={shopItem.shop}>
                   {shopItem.shop}
@@ -246,7 +266,6 @@ const TicketForm = () => {
               ))}
             </select>
           </div>
-
           <div className="mb-3">
             <label htmlFor="priority" className="form-label fw-bold">
               Priority <span className="text-danger">*</span>
@@ -260,8 +279,11 @@ const TicketForm = () => {
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
               required
+              aria-label="Select the Priority from the Dropdown"
             >
-              <option value="">Choose Priority Option</option>
+              <option value="" disabled>
+                Choose Priority Option
+              </option>
               <option value="Low">Low</option>
               <option value="Routine">Routine</option>
               <option value="High">High</option>
@@ -270,7 +292,11 @@ const TicketForm = () => {
 
           <div className="row">
             <div className="col">
-              <button type="submit" className="btn btn-primary mt-2 w-100">
+              <button
+                type="submit"
+                className="btn btn-primary mt-2 w-100"
+                aria-label="Submit form"
+              >
                 Submit
               </button>
             </div>
@@ -279,6 +305,7 @@ const TicketForm = () => {
                 type="button"
                 className="btn btn-secondary mt-2 w-100"
                 onClick={resetForm}
+                aria-label="Reset form"
               >
                 Reset
               </button>
@@ -290,6 +317,8 @@ const TicketForm = () => {
           <Modal
             show={showModal}
             onHide={handleModalClose}
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
             centered
             style={{
               background: "linear-gradient(90deg, #2C3E50, #4169E1)",
@@ -298,9 +327,10 @@ const TicketForm = () => {
             }}
           >
             <Modal.Header>
-              <Modal.Title>Ticket Details</Modal.Title>
+              <Modal.Title id="modal-title">Ticket Details</Modal.Title>
             </Modal.Header>
             <Modal.Body
+              id="modal-description"
               style={{
                 background: "linear-gradient(90deg, #2C3E50, #4169E1)",
                 color: "#D3D3D3",
@@ -336,7 +366,12 @@ const TicketForm = () => {
                 color: "#D3D3D3",
               }}
             >
-              <button className="btn btn-secondary" onClick={handleModalClose}>
+              <button
+                ref={closeButtonRef}
+                className="btn btn-secondary"
+                onClick={handleModalClose}
+                aria-label="Close modal"
+              >
                 Close
               </button>
             </Modal.Footer>

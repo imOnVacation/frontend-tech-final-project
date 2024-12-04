@@ -18,6 +18,7 @@ const Search = () => {
   const handleSearch = async () => {
     if (!keyword.trim()) {
       setError("Please enter a valid keyword");
+
       return;
     }
 
@@ -96,7 +97,9 @@ const Search = () => {
     const parts = text.split(new RegExp(`(${keyword})`, "gi"));
     return parts.map((part, index) =>
       part.toLowerCase() === keyword.toLowerCase() ? (
-        <mark key={index}>{part}</mark>
+        <mark key={index} style={{ margin: 0, padding: 0 }}>
+          {part}
+        </mark>
       ) : (
         part
       )
@@ -122,11 +125,20 @@ const Search = () => {
             placeholder="Enter keyword"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                handleSearch();
+              }
+            }}
           />
           <label for="search-tickets" className="visually-hidden">
             Search
           </label>
-          <button className="btn btn-primary mt-3" onClick={handleSearch}>
+          <button
+            className="btn btn-primary mt-3"
+            onClick={handleSearch}
+            aria-label="Search Tickets"
+          >
             Search
           </button>
         </div>
@@ -140,6 +152,7 @@ const Search = () => {
               fontSize: "16px",
               padding: "15px",
             }}
+            role="alert"
           >
             {deleteSuccess}
           </div>
@@ -160,6 +173,7 @@ const Search = () => {
               fontSize: "16px",
               padding: "10px",
             }}
+            role="alert"
           >
             {error}
           </div>
@@ -172,6 +186,7 @@ const Search = () => {
               fontSize: "16px",
               padding: "10px",
             }}
+            role="alert"
           >
             <strong>No tickets found for the keyword "{keyword}"</strong>
           </div>
@@ -227,12 +242,14 @@ const Search = () => {
                         <button
                           className="btn btn-secondary btn-sm me-2"
                           onClick={() => handleEdit(ticket)}
+                          aria-label={`Edit ticket ${ticket.id}`}
                         >
                           <FontAwesomeIcon icon={faEdit} /> Edit
                         </button>
                         <button
                           className="btn btn-danger btn-sm"
                           onClick={() => handleDelete(ticket.id)}
+                          aria-label={`Delete ticket ${ticket.id}`}
                         >
                           <FontAwesomeIcon icon={faTrash} /> Delete
                         </button>
