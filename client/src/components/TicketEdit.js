@@ -182,22 +182,31 @@ const TicketEdit = () => {
               Status <span className='text-danger'>*</span>
             </label>
             <select
-              type='text'
-              className='form-control'
-              id='status'
-              name='status'
+
+              type="text"
+              className="form-select"
+              id="status"
+              name="status"
+
+            
+
               value={formData.status}
               onChange={handleInputChange}
               required
+              aria-label="Select Ticket Status from the Dropdown"
               style={{
                 backgroundColor: '#B0C4DE',
               }}
             >
-              <option value='Open'>Open</option>
-              <option value='WIP'>WIP</option>
-              <option value='Completed'>Completed</option>
-              <option value='Assigned'>Assigned</option>
-              <option value='Cancelled'>Cancelled</option>
+
+              <option value="" disabled>
+                Choose Status Option
+              </option>
+              <option value="Open">Open</option>
+              <option value="WIP">WIP</option>
+              <option value="Completed">Completed</option>
+              <option value="Assigned">Assigned</option>
+              <option value="Cancelled">Cancelled</option>
             </select>
           </div>
 
@@ -242,16 +251,23 @@ const TicketEdit = () => {
               Shop <span className='text-danger'>*</span>
             </label>
             <select
-              className='form-control'
-              id='shop'
-              name='shop'
+
+              className="form-select"
+              id="shop"
+              name="shop"
+
+              
               value={formData.shop}
               onChange={handleInputChange}
               required
+              aria-label="Select the Shop from the Dropdown"
               style={{
                 backgroundColor: '#B0C4DE',
               }}
             >
+              <option value="" disabled>
+                Choose Shop Option
+              </option>
               {shops.map((shopItem, index) => (
                 <option key={index} value={shopItem.shop}>
                   {shopItem.shop}
@@ -265,25 +281,38 @@ const TicketEdit = () => {
               Priority <span className='text-danger'>*</span>
             </label>
             <select
-              className='form-control'
-              id='priority'
-              name='priority'
+
+              className="form-select"
+              id="priority"
+              name="priority"
+              
               value={formData.priority}
               onChange={handleInputChange}
               required
+              aria-label="Select the Priority from the Dropdown"
               style={{
                 backgroundColor: '#B0C4DE',
               }}
             >
-              <option value='Low'>Low</option>
-              <option value='Routine'>Routine</option>
-              <option value='High'>High</option>
+
+              <option value="" disabled>
+                Choose Priority Option
+              </option>
+              <option value="Low">Low</option>
+              <option value="Routine">Routine</option>
+              <option value="High">High</option>
             </select>
           </div>
 
-          <div className='row mt-5'>
-            <div className='col'>
-              <button type='submit' className='btn btn-primary mt-2 w-100'>
+          <div className="row mt-5">
+            <div className="col">
+              <button
+                type="submit"
+                className="btn btn-primary mt-2 w-100"
+                aria-label="Submit form"
+              >
+
+            
                 Submit
               </button>
             </div>
@@ -293,8 +322,11 @@ const TicketEdit = () => {
         <div className='row'>
           <div className='col d-flex justify-content-end'>
             <button
-              type='button'
-              className='btn btn-danger mt-2 w-100'
+
+              type="button"
+              className="btn btn-danger mt-2 w-100"
+              aria-label="Cancel form"
+              
               onClick={handleCancel}
             >
               Cancel
